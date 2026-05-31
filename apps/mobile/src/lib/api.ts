@@ -43,12 +43,12 @@ async function refreshAccessToken(): Promise<string | null> {
     const res = await fetch(`${BASE}/${TENANT}/${VERSION}/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken: refresh }),
+      body: JSON.stringify({ refresh_token: refresh }),
     });
     if (!res.ok) return null;
-    const data = (await res.json()) as { accessToken: string; refreshToken: string };
-    await setTokens(data.accessToken, data.refreshToken);
-    return data.accessToken;
+    const data = (await res.json()) as { access_token: string; refresh_token: string };
+    await setTokens(data.access_token, data.refresh_token);
+    return data.access_token;
   } catch {
     return null;
   }

@@ -105,6 +105,8 @@ packages/shared-types/
 - ❌ Skipping emulator screenshot in PR
 - ❌ Bundling exercise GIFs in APK — fetch from `liftfuel-assets.r2.dev/exercises/<slug>.gif`
 - ❌ Glassmorphism / Neumorphism — design is Soft-Dark Modern; rejected in design.md § 1
+- ❌ Mixing icon libraries — `lucide-react-native` ONLY (not `@expo/vector-icons`)
+- ❌ camelCase JSON over the wire for tokens / pagination / query params — use snake_case per design.md § 22.1 (matches VoxPense)
 
 ## Pitfalls (learned the hard way)
 

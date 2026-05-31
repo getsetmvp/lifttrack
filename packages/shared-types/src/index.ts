@@ -1,6 +1,12 @@
 // Shared types mirroring server DTOs. Single source of truth for mobile + (future) web.
 // Per design.md § 12 (data model) + § 13 (API contract).
-// Agent A (Phase 5) keeps these aligned with server-side Prisma + class-validator DTOs.
+//
+// Wire convention (matches VoxPense + locked across all tenants):
+//   - Model fields: camelCase (1:1 w/ Prisma camelCase columns)
+//   - POST/PATCH request bodies: camelCase fields
+//   - GET query params: snake_case
+//   - Pagination response: { data, next_cursor } (snake_case keys)
+//   - Auth token fields: snake_case (access_token, refresh_token)
 
 // ── enums ─────────────────────────────────────────────────────────────────
 
@@ -16,7 +22,6 @@ export type MealSlot =
   | 'BREAKFAST' | 'PRE_LUNCH' | 'LUNCH' | 'SNACK'
   | 'PRE_WORKOUT' | 'POST_WORKOUT' | 'DINNER';
 export type MealStatus = 'PENDING' | 'ANALYZING' | 'ANALYZED' | 'EDITED' | 'FAILED';
-export type AiKind = 'MEAL_PARSE' | 'ASK' | 'INSIGHT';
 
 // ── user + auth ──────────────────────────────────────────────────────────
 
@@ -37,6 +42,7 @@ export interface User {
   heightCm: number | null;
   bodyFatPct: number | null;
   macroOverride: MacroOverride | null;
+  fcmToken: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -52,9 +58,13 @@ export interface LoginDto {
   password: string;
 }
 
+export interface RefreshDto {
+  refresh_token: string;
+}
+
 export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
+  access_token: string;
+  refresh_token: string;
   user: User;
 }
 
@@ -103,6 +113,12 @@ export interface DayExercise extends DayExerciseInput {
   exercise?: Exercise;
 }
 
+export interface CreateDayDto {
+  name: string;
+  notes?: string | null;
+  exercises: DayExerciseInput[];
+}
+
 export interface Day {
   id: string;
   userId: string;
@@ -122,6 +138,11 @@ export interface WeekSlot {
   day?: Day | null;
 }
 
+export interface CreateWeekDto {
+  name: string;
+  slots: Array<{ dayIndex: number; dayId: string | null }>;
+}
+
 export interface Week {
   id: string;
   userId: string;
@@ -138,6 +159,13 @@ export interface RoutineWeekRef {
   weekId: string;
   position: number;
   week?: Week;
+}
+
+export interface CreateRoutineDto {
+  name: string;
+  cycleMode: CycleMode;
+  startDate: string;
+  weekIds: string[];
 }
 
 export interface Routine {
@@ -181,6 +209,7 @@ export interface WorkoutSet {
   isFailure: boolean;
   isPr: boolean;
   drops: SetDrop[];
+  deletedAt: string | null;
 }
 
 export interface WorkoutExercise {
@@ -212,6 +241,14 @@ export interface Workout {
   prCount: number;
   exercises: WorkoutExercise[];
   totals?: WorkoutTotals;
+  deletedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StartWorkoutDto {
+  dayId?: string;
+  routineId?: string;
 }
 
 export interface LogSetDto {
@@ -220,6 +257,8 @@ export interface LogSetDto {
   isWarmup?: boolean;
   isFailure?: boolean;
 }
+
+export interface LogSetResponse extends WorkoutSet {}
 
 export interface LogDropDto {
   dropIndex: number;
@@ -234,6 +273,15 @@ export interface MealItem {
   mealId: string;
   name: string;
   portionG: number | null;
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+}
+
+export interface CreateMealItemDto {
+  name: string;
+  portionG?: number | null;
   kcal: number;
   proteinG: number;
   carbsG: number;
@@ -255,6 +303,7 @@ export interface Meal {
   status: MealStatus;
   notes: string | null;
   items: MealItem[];
+  deletedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -267,6 +316,12 @@ export interface BodyMetric {
   date: string;
   weightKg: number | null;
   bodyFatPct: number | null;
+}
+
+export interface CreateBodyMetricDto {
+  date: string;
+  weightKg?: number | null;
+  bodyFatPct?: number | null;
 }
 
 // ── analytics ────────────────────────────────────────────────────────────
@@ -343,11 +398,11 @@ export interface AskResponse {
   sources: AskSource[];
 }
 
-// ── pagination ───────────────────────────────────────────────────────────
+// ── pagination (matches VoxPense `{ data, next_cursor }` shape) ──────────
 
 export interface Page<T> {
-  items: T[];
-  nextCursor: string | null;
+  data: T[];
+  next_cursor: string | null;
 }
 
 // ── error envelope (per backend.md standard) ─────────────────────────────
