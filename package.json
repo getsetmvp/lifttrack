@@ -1,0 +1,26 @@
+{
+  "name": "@yashguptadeveloper/liftfuel",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Personal fitness + nutrition tracker. Log every rep, snap every meal, see why progress moves.",
+  "license": "UNLICENSED",
+  "author": "Yash Gupta <yash.gupta.developer@gmail.com>",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:mobile": "pnpm --filter @liftfuel/mobile dev",
+    "android": "pnpm --filter @liftfuel/mobile android",
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "ota:build": "pnpm --filter @liftfuel/mobile ota:build",
+    "ota:upload": "pnpm --filter @liftfuel/mobile ota:upload",
+    "ota:publish": "pnpm --filter @liftfuel/mobile ota:publish"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "typescript": "~5.6.0"
+  }
+}
