@@ -7,7 +7,7 @@ import { api, setTokens, clearTokens, getAccessToken } from './api';
 export type { User };
 
 export async function signUp(input: SignupDto): Promise<User> {
-  const data = await api<AuthResponse>('/auth/register', {
+  const data = await api<AuthResponse>('/auth/signup', {
     method: 'POST',
     body: JSON.stringify(input),
   });
