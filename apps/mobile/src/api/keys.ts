@@ -12,6 +12,7 @@ export const qk = {
   weeks: ['weeks'] as const,
   week: (id: string) => ['week', id] as const,
   routines: ['routines'] as const,
+  routineActive: ['routine-active'] as const,
   routine: (id: string) => ['routine', id] as const,
   routineToday: (id: string) => ['routine-today', id] as const,
   workouts: (from?: string, to?: string) => ['workouts', from ?? '', to ?? ''] as const,

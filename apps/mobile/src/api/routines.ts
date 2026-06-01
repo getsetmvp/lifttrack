@@ -14,8 +14,20 @@ export function useRoutines() {
 }
 
 export function useActiveRoutine() {
-  const q = useRoutines();
-  return { ...q, data: q.data?.find((r) => r.isActive) };
+  return useQuery({
+    queryKey: qk.routineActive,
+    queryFn: async () => {
+      try {
+        return await api<Routine & { currentPosition: number; todayDayId: string | null; currentDay: number }>(
+          '/routines/active',
+        );
+      } catch (e: any) {
+        if (e?.status === 404) return null;
+        throw e;
+      }
+    },
+    staleTime: 30_000,
+  });
 }
 
 export function useRoutine(id: string | undefined) {

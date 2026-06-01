@@ -76,6 +76,7 @@ export default function Today() {
             </Text>
             {activeRoutine.data ? (
               <Text style={{ color: '#14B8A6', fontSize: 12, fontWeight: '700', marginTop: 2 }}>
+                {(activeRoutine.data as any).currentDay ? `Day ${(activeRoutine.data as any).currentDay} · ` : ''}
                 {activeRoutine.data.name} · {dayName()} ·{' '}
                 {todayRes.data?.isRest ? 'Rest' : todayRes.data?.day?.name ?? '—'}
               </Text>

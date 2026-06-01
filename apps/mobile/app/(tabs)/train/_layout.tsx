@@ -6,7 +6,9 @@ export default function TrainLayout() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: '#0F1115' },
-        animation: 'slide_from_right',
+        animation: 'simple_push',
+        animationDuration: 220,
+        gestureEnabled: true,
       }}
     />
   );
