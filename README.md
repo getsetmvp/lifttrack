@@ -8,12 +8,57 @@
 |---|---|
 | Type | `frontend-mobile` (internal monorepo: `apps/mobile/` day-1, future `apps/web/`) |
 | Visibility | Private |
-| Status | scaffold (Phase 3 of [app-development-pipeline](../../productivity/standards/app-development-pipeline.md)) |
+| Status | Phase 5 (~70% complete). End-to-end walkable on emulator. Workout-w/-exercises blocked on R2 asset seed. |
+| Branch model | **direct-to-main, NO PRs** (user lock 2026-06-01) |
+| Expo SDK | **54** (locked; matches Expo Go installed on emulator-5554) |
 | Backend tenant | `liftfuel` on `https://server.getsetmvp.com/liftfuel/v1/*` |
 | OTA system | Cloudflare via [yashguptadeveloper/ota-server](https://github.com/yashguptadeveloper/ota-server) — NOT EAS Update |
 | Distribution | EAS Build → APK day-1 (Play Store internal testing later) |
 | Owner | Yash |
 | Founded | 2026-05-31 |
+| Last verified on emulator | 2026-06-01 (auth → onboarding → today → tabs → day creation) |
+
+## Quick run (Android emulator)
+
+```bash
+# Terminal 1 — Metro bundler
+cd ~/Projects/liftfuel/apps/mobile
+EXPO_NO_INTERACTIVE=1 npx expo start --port 8082 --host lan
+
+# Terminal 2 — load app in Expo Go on emulator
+# Replace <emu> with `emulator-5554` (or `adb devices` to find yours)
+adb -s <emu> reverse tcp:8082 tcp:8082
+adb -s <emu> shell am force-stop host.exp.exponent
+adb -s <emu> shell am start -a android.intent.action.VIEW -d "exp://127.0.0.1:8082"
+
+# Force-stop + relaunch to pick up code changes (Expo Go caches manifest)
+```
+
+## What's live (verified)
+
+| Surface | State |
+|---|---|
+| Auth: welcome / login / register w/ password strength | ✅ live |
+| Onboarding: unit → goal → body | ✅ live, persists to `/users/me` + `/body-metrics` |
+| Today tab (live data) | ✅ live |
+| Train tab + routines/weeks/days list+detail+new | ✅ live (UI), needs exercise catalog for full UX |
+| Active workout + set logger sheet + complete | ✅ live (UI), needs exercises |
+| Fuel tab — 7 meal slots + macro rings + camera FAB | ✅ live (UI), camera flow needs device |
+| Stats landing + AI chat (live `/ai/ask`) | ✅ live |
+| Profile + settings + body metrics + about | ✅ live |
+| Server tenant (signup/login/refresh/me/days/weeks/routines/workouts/meals/analytics/ai) | ✅ live |
+
+## What's NOT live yet (P1 backlog in planning tasks.md)
+
+- Exercise catalog (R2 bucket creation + 82 GIF upload + seed Exercise table)
+- Meal camera flow (needs real device)
+- Exercise picker w/ search
+- Drop-set sheet (full N-drop UI)
+- Rest-timer overlay route
+- Stats sub-pages: strength / volume / nutrition / correlation
+- Light theme (locked deferred per design D-LIT)
+- Jest + RNTL tests
+- Sentry RN
 
 ## What it is
 

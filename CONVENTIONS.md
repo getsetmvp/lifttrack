@@ -25,11 +25,11 @@ Repo-local rules. Cross-repo standards live in `~/productivity/standards/`.
 
 ## Branch model
 
-- `main` is protected
-- Branch: `feat/<scope>` per Phase 5 partition OR `<type>/<slug>` for general work
-- Conventional Branches types: `feat/`, `fix/`, `docs/`, `chore/`, `refactor/`, `test/`, `perf/`, `build/`, `ci/`
-- PR-only merges; squash to main
-- Each PR includes emulator screenshot (per pipeline D7)
+- **Direct-to-main, NO PRs** — user lock 2026-06-01.
+- `main` is NOT branch-protected. Commit + push direct.
+- Feature branches optional for parallel work; merge w/o review.
+- Conventional Commits still required (see below).
+- Each commit message can reference an emulator screenshot OR test result in body. No formal screenshot gate since no PRs.
 
 ## Commits
 
@@ -90,6 +90,11 @@ See `~/productivity/hustle/liftfuel/design.md` § 20. Each agent owns specific f
 - ❌ Glassmorphism / Neumorphism — design rejected both; do not reintroduce
 - ❌ Persisting lb values — canonical storage is kg, only display converts
 - ❌ Direct PR-detection logic on client — server returns `isPr` on `LogSetDto` response
+- ❌ `<Pressable style={({ pressed }) => ...}>` — NativeWind v4 css-interop clobbers it. Use static `style={{...}}`. If pressed feedback needed, wrap in `<View>` w/ `useState`.
+- ❌ `<Link asChild><Button>` — wrapping eats Button's `fullWidth`. Use `onPress={() => router.push(...)}` directly.
+- ❌ Branch + PR workflow — direct-to-main only, per user lock 2026-06-01.
+- ❌ Changing babel config to set `jsxImportSource: 'nativewind'` — breaks Pressable styles.
+- ❌ Bumping Expo SDK past 54 unless Expo Go on test emulator upgrades too.
 
 ## Documentation
 

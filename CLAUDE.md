@@ -110,16 +110,35 @@ packages/shared-types/
 
 ## Pitfalls (learned the hard way)
 
-- **NativeWind v4 + Reanimated v3**: ensure `babel-plugin-react-native-reanimated` is LAST in plugin order (already correct in `babel.config.js`)
-- **Expo Dev Client APK install**: must rebuild + reinstall when adding native deps (e.g., new Expo SDK plugin); JS-only changes hot-reload via Metro
-- **OTA only ships JS**: Expo SDK upgrade OR `app.config.js` native config changes (icon, splash, permissions) REQUIRE a fresh EAS build
-- **runtimeVersion**: locked to `"1.0.0"` in `app.config.js`. Bump only on native rebuild — bumping invalidates older OTA bundles, forcing fresh APK install
-- **OTA cert path**: must be relative `./certs/certificate.pem` in `app.config.js`, not absolute
-- **GIF playback**: use `expo-image` not `Image` from react-native — only `expo-image` autoplays animated GIFs reliably on Android
-- **Drop set semantics**: TopSet + N drops (1-5), each drop has own weight + reps; no rest between drops in same set; design.md D-DROP locks this
-- **Unit conversions**: DB stores kg only. Client converts to lb for display when `user.unit === 'LB'`. Never persist lb values; `LogSetDto.weightKg` always expects kg.
+### Build / SDK / runtime
+- **Expo SDK pin = 54** (matches Expo Go installed on emulator-5554). Don't upgrade to 55/56 unless Expo Go upgrades too. `npx expo install --check` verifies canonical versions.
+- **Babel plugin**: `react-native-worklets/plugin` (NOT `react-native-reanimated/plugin`). reanimated v4 moved worklets to its own pkg. `react-native-worklets@0.5.1` pinned (canonical SDK 54).
+- **NativeWind**: `babel-preset-expo` WITHOUT `jsxImportSource: 'nativewind'` override. Setting that override breaks Pressable function-style props.
+- **typedRoutes disabled** (`experiments.typedRoutes: false` in `app.config.js`) — dynamic routes like `/meal/[id]` clash w/ strict typed routes after SDK 54.
+- **Metro on port 8082** (voxpense holds 8081 when both sessions run). Use `--port 8082 --host lan` + `adb -s <emu> reverse tcp:8082 tcp:8082`.
+
+### Pressable atom anti-pattern (CRITICAL)
+- ❌ `<Pressable style={({ pressed }) => ({...})}>` — BROKEN by NativeWind v4 css-interop wrapper. Style gets clobbered. All atoms had this bug initially; all converted to static `style={{...}}` on Pressable. If new pressed feedback needed, wrap in `<View>` w/ `useState`-tracked opacity OR use static style + accept no press visual.
+- ❌ `<Link asChild><Button>` — Link wrapping eats Button's `fullWidth`/`alignSelf: 'stretch'`. Use `onPress={() => router.push('...')}` directly on Button.
+
+### Domain / data
+- **Expo Dev Client APK install**: must rebuild + reinstall when adding native deps; JS-only changes hot-reload via Metro
+- **OTA only ships JS**: Expo SDK upgrade OR `app.config.js` native config changes REQUIRE a fresh EAS build
+- **runtimeVersion**: locked `"1.0.0"`. Bump only on native rebuild — invalidates older OTA bundles
+- **OTA cert path**: must be relative `./certs/certificate.pem` in `app.config.js`
+- **GIF playback**: use `expo-image` not `Image` from react-native — only `expo-image` autoplays GIFs reliably on Android
+- **Drop set semantics**: TopSet + N drops (1-5), each drop has own weight + reps; no rest between drops; design.md D-DROP locks
+- **Unit conversions**: DB stores kg ONLY. Client converts to lb for display when `user.unit === 'LB'`. Never persist lb. `LogSetDto.weightKg` always expects kg.
 - **e1RM formula**: Epley `weightKg * (1 + reps/30)`. PR detector window = last 90d, warm-ups excluded.
-- **Today resolver**: `(today - routine.startDate)/7 % cycleLength → week → dayOfWeek → Day`. Mon = dayIndex 0. Server returns resolved Day via `/routines/:id/today`.
+- **Today resolver**: `(today - routine.startDate)/7 % cycleLength → week → dayOfWeek → Day`. Mon = dayIndex 0. Server `/routines/:id/today`.
+- **Wire format**: snake_case for tokens/pagination/query params; camelCase for POST/PATCH body fields. Matches VoxPense.
+- **`adb shell input text`** eats spaces — test data won't round-trip via adb input. Use comma or underscore in test strings.
+
+### Workflow (user lock 2026-06-01)
+- **NO PRs on this repo** — commit + push direct to `main`. User explicit rule.
+- Phase 5 ~70% done. Remaining: meal camera, exercise picker w/ catalog, drop-set sheet full UI, rest-timer overlay route, stats sub-pages.
+- Exercise catalog NOT seeded yet — R2 asset migration P1 task pending. Workout flow w/ real exercises blocked.
+- Light theme deferred per design D-LIT lock (v1.1).
 
 ## Where related stuff lives
 
