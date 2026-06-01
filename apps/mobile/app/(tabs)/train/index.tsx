@@ -3,8 +3,8 @@
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { CalendarDays, ChevronRight, Folder, History, Layers, Play } from 'lucide-react-native';
-import { Button, Card, IconButton, LoadingShimmer } from '../../../src/components/ui';
+import { CalendarDays, ChevronRight, Folder, History, Layers, Play, Search } from 'lucide-react-native';
+import { Button, Card, Chip, IconButton, LoadingShimmer } from '../../../src/components/ui';
 import { useActiveRoutine, useRoutines } from '../../../src/api/routines';
 import { useDays } from '../../../src/api/days';
 import { useWeeks } from '../../../src/api/weeks';
@@ -39,10 +39,15 @@ export default function TrainLanding() {
             </Card>
           ) : (
             <Card accent="teal">
-              <Text style={{ color: '#F1F5F9', fontSize: 18, fontWeight: '700' }}>{active.data.name}</Text>
-              <Text style={{ color: '#94A3B8', fontFamily: 'JetBrainsMono_500Medium', fontSize: 11, marginTop: 2 }}>
-                {active.data.weekRefs.length} weeks · {active.data.cycleMode}
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#F1F5F9', fontSize: 18, fontWeight: '700' }}>{active.data.name}</Text>
+                  <Text style={{ color: '#94A3B8', fontFamily: 'JetBrainsMono_500Medium', fontSize: 11, marginTop: 2 }}>
+                    {active.data.weekRefs.length} weeks · {active.data.cycleMode}
+                  </Text>
+                </View>
+                <Chip label="Active" tone="teal" />
+              </View>
               <View style={{ height: 12 }} />
               <Button label="View routine" variant="secondary" fullWidth onPress={() => router.push(`/(tabs)/train/routines/${active.data!.id}`)} />
             </Card>
@@ -81,31 +86,55 @@ export default function TrainLanding() {
           <Text style={{ color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase', marginBottom: 8 }}>
             Quick actions
           </Text>
-          <Pressable
-            onPress={async () => {
-              const w = await start.mutateAsync({});
-              router.push(`/workout/${w.id}/active`);
-            }}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 12,
-              padding: 12,
-              backgroundColor: '#181B22',
-              borderWidth: 1,
-              borderColor: '#2A2F3A',
-              borderRadius: 14,
-            }}
-          >
-            <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: '#14B8A6', alignItems: 'center', justifyContent: 'center' }}>
-              <Play color="#042F2A" size={16} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ color: '#F1F5F9', fontSize: 14, fontWeight: '700' }}>Start free workout</Text>
-              <Text style={{ color: '#94A3B8', fontSize: 11 }}>No plan, just log</Text>
-            </View>
-            <ChevronRight color="#64748B" size={16} />
-          </Pressable>
+          <View style={{ gap: 8 }}>
+            <Pressable
+              onPress={async () => {
+                const w = await start.mutateAsync({});
+                router.push(`/workout/${w.id}/active`);
+              }}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 12,
+                padding: 12,
+                backgroundColor: '#181B22',
+                borderWidth: 1,
+                borderColor: '#2A2F3A',
+                borderRadius: 14,
+              }}
+            >
+              <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: '#14B8A6', alignItems: 'center', justifyContent: 'center' }}>
+                <Play color="#042F2A" size={16} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: '#F1F5F9', fontSize: 14, fontWeight: '700' }}>Start free workout</Text>
+                <Text style={{ color: '#94A3B8', fontSize: 11 }}>No plan, just log</Text>
+              </View>
+              <ChevronRight color="#64748B" size={16} />
+            </Pressable>
+            <Pressable
+              onPress={() => router.push('/(tabs)/train/routines')}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 12,
+                padding: 12,
+                backgroundColor: '#181B22',
+                borderWidth: 1,
+                borderColor: '#2A2F3A',
+                borderRadius: 14,
+              }}
+            >
+              <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: '#21252E', alignItems: 'center', justifyContent: 'center' }}>
+                <Search color="#94A3B8" size={16} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: '#F1F5F9', fontSize: 14, fontWeight: '700' }}>Browse exercises</Text>
+                <Text style={{ color: '#94A3B8', fontSize: 11 }}>Find an exercise to add</Text>
+              </View>
+              <ChevronRight color="#64748B" size={16} />
+            </Pressable>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

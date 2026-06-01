@@ -59,8 +59,11 @@ export default function StatsLanding() {
           </View>
         </Pressable>
 
-        <View>
-          <Text style={{ color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase', marginBottom: 8 }}>Volume · {range}</Text>
+        <Pressable onPress={() => router.push('/(tabs)/stats/volume' as any)}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <Text style={{ color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase' }}>Volume · {range}</Text>
+            <ChevronRight color="#64748B" size={14} />
+          </View>
           <Card>
             <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6 }}>
               <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_700Bold', fontSize: 24 }}>
@@ -72,10 +75,13 @@ export default function StatsLanding() {
               {summary.data?.workouts ?? 0} workouts · {summary.data?.prs ?? 0} PRs
             </Text>
           </Card>
-        </View>
+        </Pressable>
 
-        <View>
-          <Text style={{ color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase', marginBottom: 8 }}>Nutrition</Text>
+        <Pressable onPress={() => router.push('/(tabs)/stats/nutrition' as any)}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <Text style={{ color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase' }}>Nutrition</Text>
+            <ChevronRight color="#64748B" size={14} />
+          </View>
           <Card>
             <View style={{ gap: 12 }}>
               <View>
@@ -92,7 +98,22 @@ export default function StatsLanding() {
               </Text>
             </View>
           </Card>
-        </View>
+        </Pressable>
+
+        <Pressable onPress={() => router.push('/(tabs)/stats/correlation' as any)}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 14, borderRadius: 14, backgroundColor: '#181B22', borderWidth: 1, borderColor: '#2A2F3A' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: 'rgba(20,184,166,0.15)', alignItems: 'center', justifyContent: 'center' }}>
+                <Sparkles color="#14B8A6" size={16} />
+              </View>
+              <View>
+                <Text style={{ color: '#F1F5F9', fontSize: 14, fontWeight: '700' }}>Correlation</Text>
+                <Text style={{ color: '#94A3B8', fontSize: 11 }}>Find what's moving your numbers</Text>
+              </View>
+            </View>
+            <ChevronRight color="#64748B" size={14} />
+          </View>
+        </Pressable>
 
         <Button
           label="Ask LiftFuel"

@@ -1,8 +1,9 @@
 // Today — design.md § 8.1. Live data from /auth/me + active routine + today's meals + summary.
 
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import Svg, { Circle } from 'react-native-svg';
 import { Camera, ChevronRight, Dumbbell, Flame, Play } from 'lucide-react-native';
 import {
   Avatar,
@@ -12,7 +13,6 @@ import {
   EmptyState,
   IconButton,
   LoadingShimmer,
-  MacroRing,
   StatTile,
 } from '../../src/components/ui';
 import { useMe } from '../../src/api/auth';
@@ -33,7 +33,7 @@ export default function Today() {
   const activeRoutine = useActiveRoutine();
   const todayRes = useRoutineToday(activeRoutine.data?.id);
   const meals = useMealsForDate(TODAY);
-  const summary = useAnalyticsSummary('30d');
+  const summary = useAnalyticsSummary('7d');
   const recent = useWorkouts();
   const start = useStartWorkout();
 
@@ -149,27 +149,18 @@ export default function Today() {
               {Math.round(totals.kcal)} / {targets.kcal} kcal
             </Text>
           </View>
-          <View style={{ alignItems: 'center', marginBottom: 12 }}>
-            <MacroRing
-              protein={totals.proteinG}
-              carbs={totals.carbsG}
-              fat={totals.fatG}
-              kcal={totals.kcal}
-              targets={{ protein: targets.proteinG, carbs: targets.carbsG, fat: targets.fatG, kcal: targets.kcal }}
-              size={80}
-            />
-          </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
             {[
-              { label: 'P', v: totals.proteinG, t: targets.proteinG, unit: 'g' },
-              { label: 'C', v: totals.carbsG, t: targets.carbsG, unit: 'g' },
-              { label: 'F', v: totals.fatG, t: targets.fatG, unit: 'g' },
-              { label: 'kcal', v: totals.kcal, t: targets.kcal, unit: '' },
-            ].map((m, i) => (
-              <View key={i} style={{ alignItems: 'center' }}>
-                <Text style={{ color: '#94A3B8', fontSize: 10, fontWeight: '700' }}>{m.label}</Text>
-                <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_600SemiBold', fontSize: 13 }}>
-                  {Math.round(m.v)}<Text style={{ color: '#64748B', fontSize: 10 }}>/{m.t}{m.unit}</Text>
+              { label: 'Protein', v: totals.proteinG, t: targets.proteinG, color: '#14B8A6' },
+              { label: 'Carbs', v: totals.carbsG, t: targets.carbsG, color: '#F97316' },
+              { label: 'Fat', v: totals.fatG, t: targets.fatG, color: '#A78BFA' },
+              { label: 'kcal', v: totals.kcal, t: targets.kcal, color: '#F1F5F9' },
+            ].map((m) => (
+              <View key={m.label} style={{ alignItems: 'center', flex: 1 }}>
+                <MiniRing pct={m.t ? (m.v / m.t) * 100 : 0} color={m.color} />
+                <Text style={{ color: '#94A3B8', fontSize: 10, marginTop: 4 }}>{m.label}</Text>
+                <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_600SemiBold', fontSize: 12, marginTop: 1 }}>
+                  {Math.round(m.v)}<Text style={{ color: '#64748B', fontSize: 10 }}>/{m.t}</Text>
                 </Text>
               </View>
             ))}
@@ -186,12 +177,17 @@ export default function Today() {
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <StatTile label="Streak" value={`${summary.data?.streak ?? 0} d`} />
           <StatTile label="Volume" value={formatVolume(summary.data?.volumeKg ?? 0, me.data?.unit ?? 'KG')} />
-          <StatTile label="PRs · 30d" value={`${summary.data?.prs ?? 0}`} tone="teal" />
+          <StatTile label="PRs · 7d" value={`${summary.data?.prs ?? 0}`} tone="teal" />
         </View>
 
-        <Text style={{ color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase', marginTop: 12 }}>
-          Recent workouts
-        </Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
+          <Text style={{ color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase' }}>
+            Recent workouts
+          </Text>
+          <Pressable onPress={() => router.push('/(tabs)/train/history')} hitSlop={8}>
+            <Text style={{ color: '#14B8A6', fontSize: 12, fontWeight: '700' }}>See all</Text>
+          </Pressable>
+        </View>
         {recent.isLoading ? (
           <Card><LoadingShimmer height={80} radius={8} /></Card>
         ) : (recent.data ?? []).length === 0 ? (
@@ -227,5 +223,20 @@ export default function Today() {
         )}
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function MiniRing({ pct, color }: { pct: number; color: string }) {
+  const size = 48;
+  const r = 15;
+  const stroke = 3;
+  const circ = 2 * Math.PI * r;
+  const clamped = Math.max(0, Math.min(100, pct));
+  const dash = `${(circ * clamped) / 100} ${circ}`;
+  return (
+    <Svg width={size} height={size} viewBox="0 0 36 36" style={{ transform: [{ rotate: '-90deg' }] }}>
+      <Circle cx={18} cy={18} r={r} fill="none" stroke="rgba(148,163,184,0.18)" strokeWidth={stroke} />
+      <Circle cx={18} cy={18} r={r} fill="none" stroke={color} strokeWidth={stroke} strokeDasharray={dash} strokeLinecap="round" />
+    </Svg>
   );
 }
