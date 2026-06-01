@@ -226,8 +226,9 @@ export default function ActiveWorkout() {
             <View style={{ flexDirection: 'row', gap: 8 }}>
               <View style={{ flex: 1 }}>
                 <Text style={{ color: '#94A3B8', fontSize: 10, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase', textAlign: 'center', marginBottom: 4 }}>Weight</Text>
-                <View style={{ height: 56, backgroundColor: '#181B22', borderRadius: 12, borderWidth: 2, borderColor: '#14B8A6', alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ height: 56, backgroundColor: '#181B22', borderRadius: 12, borderWidth: 2, borderColor: '#14B8A6', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 4 }}>
                   <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_700Bold', fontSize: 22 }}>{weightVal || '0'}</Text>
+                  <Text style={{ color: '#94A3B8', fontFamily: 'JetBrainsMono_500Medium', fontSize: 12 }}>{unitTab === 'KG' ? 'kg' : 'lb'}</Text>
                 </View>
               </View>
               <View style={{ flex: 1 }}>
@@ -238,11 +239,14 @@ export default function ActiveWorkout() {
               </View>
             </View>
 
-            <SegmentedControl
-              options={[{ label: 'kg', value: 'KG' }, { label: 'lb', value: 'LB' }]}
-              value={unitTab}
-              onChange={setUnitTab}
-            />
+            <View>
+              <Text style={{ color: '#94A3B8', fontSize: 10, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase', marginBottom: 4 }}>Unit (per set)</Text>
+              <SegmentedControl
+                options={[{ label: 'kg', value: 'KG' }, { label: 'lb', value: 'LB' }]}
+                value={unitTab}
+                onChange={setUnitTab}
+              />
+            </View>
             <View style={{ flexDirection: 'row', gap: 16, marginVertical: 4 }}>
               <Pressable onPress={() => setWarmup(!warmup)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <View style={{ width: 16, height: 16, borderRadius: 4, backgroundColor: warmup ? '#14B8A6' : 'transparent', borderWidth: 1.5, borderColor: warmup ? '#14B8A6' : '#475569' }} />

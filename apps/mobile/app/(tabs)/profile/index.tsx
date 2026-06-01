@@ -7,12 +7,18 @@ import { Alert } from 'react-native';
 import { ChevronRight, Download, LogOut, Pencil, Settings } from 'lucide-react-native';
 import { Avatar, Button, Card, Chip, IconButton } from '../../../src/components/ui';
 import { useMe, useSignOut } from '../../../src/api/auth';
+import { useBodyMetrics } from '../../../src/api/users';
+import { formatWeight } from '../../../src/lib/format';
+import { useUnitStore } from '../../../src/store/useUnitStore';
 
 export default function Profile() {
   const me = useMe();
   const signOut = useSignOut();
+  const bms = useBodyMetrics();
+  const { unit } = useUnitStore();
 
   const u = me.data;
+  const latestWeight = (bms.data ?? []).find((b) => b.weightKg != null)?.weightKg ?? null;
   const goalLabel: Record<string, string> = {
     MUSCLE: 'Muscle',
     FAT: 'Cut',
@@ -44,7 +50,11 @@ export default function Profile() {
 
         <Section title="Body">
           <Row label="Height" value={u?.heightCm ? `${u.heightCm} cm` : '—'} onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any })} />
-          <Row label="Weight" value="—" onPress={() => router.push('/(tabs)/profile/body-metrics')} />
+          <Row
+            label="Weight"
+            value={latestWeight != null ? formatWeight(latestWeight, unit) : '—'}
+            onPress={() => router.push('/(tabs)/profile/body-metrics')}
+          />
           <Row label="Body fat" value={u?.bodyFatPct ? `${u.bodyFatPct}%` : '—'} onPress={() => router.push('/(tabs)/profile/body-metrics')} />
           <Row
             label="Goal"
@@ -55,8 +65,7 @@ export default function Profile() {
         </Section>
 
         <Section title="Preferences">
-          <Row label="Unit" value={u?.unit === 'LB' ? 'lb' : 'kg'} onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any, params: { focus: 'unit' } })} />
-          <Row label="Increment" value={u?.increment ? `${u.increment} kg` : '0.25 kg'} onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any, params: { focus: 'increment' } })} />
+          <Row label="Display unit" value={u?.unit === 'LB' ? 'lb' : 'kg'} onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any, params: { focus: 'unit' } })} />
           <Row label="Macro targets" value={u?.macroOverride ? 'Custom' : 'Auto'} onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any, params: { focus: 'macros' } })} />
         </Section>
 
