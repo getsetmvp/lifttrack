@@ -4,12 +4,18 @@
 import 'react-native-reanimated';
 import '../src/styles/global.css';
 
-import { enableScreens } from 'react-native-screens';
-// Disable native screens. native-stack pops on Android show a brief white flash
-// on the outgoing screen because the platform clears the native surface before
-// the JS background paints. JS-driven stack avoids that — all screens stay in
-// the same RN view tree throughout the animation. Tiny perf cost vs no flash.
-enableScreens(false);
+import { ThemeProvider, DarkTheme } from '@react-navigation/native';
+// Apply a fully-dark navigation theme so React Navigation's internal container
+// view paints #0F1115 instead of the default white. Otherwise fade/swap
+// transitions reveal a white layer between screens.
+const NAV_THEME = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: '#0F1115',
+    card: '#0F1115',
+  },
+};
 
 import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
@@ -89,6 +95,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#0F1115' }}>
       <SafeAreaProvider>
+        <ThemeProvider value={NAV_THEME}>
         <QueryClientProvider client={queryClient}>
           {/* Absolute dark backdrop sits behind the Stack at all times so any
               transient empty surface (screen mount, status bar re-paint, native
@@ -108,8 +115,7 @@ export default function RootLayout() {
             screenOptions={{
               headerShown: false,
               contentStyle: { backgroundColor: '#0F1115' },
-              animation: 'fade',
-              animationDuration: 120,
+              animation: 'none',
               freezeOnBlur: false,
               navigationBarColor: '#0F1115',
               statusBarBackgroundColor: '#0F1115',
@@ -130,6 +136,7 @@ export default function RootLayout() {
           </Stack>
           <StatusBar style="light" translucent={false} backgroundColor="#0F1115" />
         </QueryClientProvider>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

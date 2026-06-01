@@ -6,8 +6,7 @@ export default function TrainLayout() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: '#0F1115' },
-        animation: 'fade',
-        animationDuration: 120,
+        animation: 'none',
         freezeOnBlur: false,
       }}
     />
