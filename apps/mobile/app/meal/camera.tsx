@@ -1,9 +1,9 @@
 // Meal camera — design.md § 8 screen 28. Snap, AI-parse, attach to meal.
 
-import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Alert, BackHandler, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -35,6 +35,34 @@ export default function MealCamera() {
       requestPerm();
     }
   }, [perm, requestPerm]);
+
+  // Phase-aware Android hardware-back:
+  // ANALYZING -> swallow (don't cancel mid-upload).
+  // PREVIEW -> go back to CAPTURE (not close screen).
+  // CAPTURE -> let RN-navigation handle (pop the modal).
+  const handleClose = useCallback(() => {
+    if (phase === 'PREVIEW') {
+      setPreview(null);
+      setPhase('CAPTURE');
+      return;
+    }
+    router.back();
+  }, [phase]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+        if (phase === 'ANALYZING') return true;
+        if (phase === 'PREVIEW') {
+          setPreview(null);
+          setPhase('CAPTURE');
+          return true;
+        }
+        return false;
+      });
+      return () => sub.remove();
+    }, [phase]),
+  );
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -120,7 +148,7 @@ export default function MealCamera() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top', 'bottom']}>
         <View style={{ padding: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Close" variant="ghost" onPress={() => router.back()} />
+          <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Close" variant="ghost" onPress={handleClose} />
           <Text style={{ color: '#F1F5F9', fontSize: 16, fontWeight: '700' }}>Snap meal</Text>
           <View style={{ width: 40 }} />
         </View>
@@ -142,7 +170,7 @@ export default function MealCamera() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }} edges={['top', 'bottom']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16 }}>
-        <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Close" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Close" variant="ghost" onPress={handleClose} />
         <Text style={{ color: '#F1F5F9', fontSize: 14, fontWeight: '700' }}>
           {phase === 'ANALYZING' ? 'Analyzing…' : phase === 'PREVIEW' ? 'Review' : `Snap meal · ${initialSlot.replace('_', ' ')}`}
         </Text>
