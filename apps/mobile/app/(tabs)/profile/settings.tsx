@@ -5,8 +5,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ArrowLeft, ExternalLink, Laptop, Moon, RefreshCw, Sun } from 'lucide-react-native';
 import { Card, IconButton, Switch } from '../../../src/components/ui';
-import * as Updates from 'expo-updates';
 import { useState } from 'react';
+
+// expo-updates is only available in dev-builds / production APK, not in Expo Go.
+// Guard import so settings page renders w/o crashing.
+const Updates: {
+  runtimeVersion?: string | null;
+  updateId?: string | null;
+  checkForUpdateAsync: () => Promise<unknown>;
+} = (() => {
+  try {
+    return require('expo-updates');
+  } catch {
+    return { runtimeVersion: null, updateId: null, checkForUpdateAsync: async () => undefined };
+  }
+})();
 
 export default function SettingsScreen() {
   const [restTimerNotif, setRestTimerNotif] = useState(true);
