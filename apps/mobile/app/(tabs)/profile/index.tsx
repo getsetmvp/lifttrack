@@ -38,26 +38,26 @@ export default function Profile() {
                 Member since {u?.createdAt ? new Date(u.createdAt).toLocaleDateString('en', { month: 'short', year: 'numeric' }) : '—'}
               </Text>
             </View>
-            <IconButton icon={<Pencil color="#94A3B8" size={16} />} accessibilityLabel="Edit" size={36} onPress={() => router.push('/(tabs)/profile/edit')} />
+            <IconButton icon={<Pencil color="#94A3B8" size={16} />} accessibilityLabel="Edit" size={36} onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any })} />
           </View>
         </Card>
 
         <Section title="Body">
-          <Row label="Height" value={u?.heightCm ? `${u.heightCm} cm` : '—'} onPress={() => router.push('/(tabs)/profile/edit')} />
+          <Row label="Height" value={u?.heightCm ? `${u.heightCm} cm` : '—'} onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any })} />
           <Row label="Weight" value="—" onPress={() => router.push('/(tabs)/profile/body-metrics')} />
           <Row label="Body fat" value={u?.bodyFatPct ? `${u.bodyFatPct}%` : '—'} onPress={() => router.push('/(tabs)/profile/body-metrics')} />
           <Row
             label="Goal"
             value={goalLabel[u?.goal ?? 'MUSCLE']!}
-            onPress={() => router.push('/(tabs)/profile/edit?focus=goal' as any)}
+            onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any, params: { focus: 'goal' } })}
             chipTone="teal"
           />
         </Section>
 
         <Section title="Preferences">
-          <Row label="Unit" value={u?.unit === 'LB' ? 'lb' : 'kg'} onPress={() => router.push('/(tabs)/profile/edit?focus=unit' as any)} />
-          <Row label="Increment" value={u?.increment ? `${u.increment} kg` : '0.25 kg'} onPress={() => router.push('/(tabs)/profile/edit?focus=increment' as any)} />
-          <Row label="Macro targets" value={u?.macroOverride ? 'Custom' : 'Auto'} onPress={() => router.push('/(tabs)/profile/edit?focus=macros' as any)} />
+          <Row label="Unit" value={u?.unit === 'LB' ? 'lb' : 'kg'} onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any, params: { focus: 'unit' } })} />
+          <Row label="Increment" value={u?.increment ? `${u.increment} kg` : '0.25 kg'} onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any, params: { focus: 'increment' } })} />
+          <Row label="Macro targets" value={u?.macroOverride ? 'Custom' : 'Auto'} onPress={() => router.push({ pathname: '/(tabs)/profile/edit' as any, params: { focus: 'macros' } })} />
         </Section>
 
         <Section title="Data">
