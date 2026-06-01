@@ -8,6 +8,7 @@ export default function StatsLayout() {
         contentStyle: { backgroundColor: '#0F1115' },
         animation: 'slide_from_right',
         animationDuration: 240,
+        freezeOnBlur: false,
       }}
     />
   );

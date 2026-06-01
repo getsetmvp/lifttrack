@@ -10,6 +10,7 @@ export default function AuthLayout() {
         contentStyle: { backgroundColor: '#0F1115' },
         animation: 'slide_from_right',
         animationDuration: 240,
+        freezeOnBlur: false,
       }}
     />
   );
