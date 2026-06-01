@@ -93,8 +93,7 @@ export default function RootLayout() {
             screenOptions={{
               headerShown: false,
               contentStyle: { backgroundColor: '#0F1115' },
-              animation: 'slide_from_right',
-              animationDuration: 240,
+              animation: 'none',
               freezeOnBlur: false,
             }}
           >
