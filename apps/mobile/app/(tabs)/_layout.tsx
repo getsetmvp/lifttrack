@@ -1,7 +1,16 @@
 // Tabs: Today / Train / Fuel / Stats / Profile. Per design.md § 6.
 
-import { Tabs } from 'expo-router';
+import { Tabs, router } from 'expo-router';
 import { Sun, Dumbbell, Apple, Activity, CircleUser } from 'lucide-react-native';
+
+// Tap on a tab always lands on that tab's root screen — pop any pushed sub-routes
+// in the underlying stack so back from root goes to Today/exit, not a sibling sub-route.
+const resetOnTap = (rootPath: string) => ({
+  tabPress: (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    router.navigate(rootPath as any);
+  },
+});
 
 export default function TabsLayout() {
   return (
@@ -25,6 +34,7 @@ export default function TabsLayout() {
           title: 'Today',
           tabBarIcon: ({ color }) => <Sun color={color} size={20} />,
         }}
+        listeners={() => resetOnTap('/(tabs)/today')}
       />
       <Tabs.Screen
         name="train"
@@ -32,6 +42,7 @@ export default function TabsLayout() {
           title: 'Train',
           tabBarIcon: ({ color }) => <Dumbbell color={color} size={20} />,
         }}
+        listeners={() => resetOnTap('/(tabs)/train')}
       />
       <Tabs.Screen
         name="fuel"
@@ -39,6 +50,7 @@ export default function TabsLayout() {
           title: 'Fuel',
           tabBarIcon: ({ color }) => <Apple color={color} size={20} />,
         }}
+        listeners={() => resetOnTap('/(tabs)/fuel')}
       />
       <Tabs.Screen
         name="stats"
@@ -46,6 +58,7 @@ export default function TabsLayout() {
           title: 'Stats',
           tabBarIcon: ({ color }) => <Activity color={color} size={20} />,
         }}
+        listeners={() => resetOnTap('/(tabs)/stats')}
       />
       <Tabs.Screen
         name="profile"
@@ -53,6 +66,7 @@ export default function TabsLayout() {
           title: 'Profile',
           tabBarIcon: ({ color }) => <CircleUser color={color} size={20} />,
         }}
+        listeners={() => resetOnTap('/(tabs)/profile')}
       />
     </Tabs>
   );
