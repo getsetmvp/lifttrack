@@ -22,7 +22,7 @@ export default function OnboardUnit() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top', 'bottom']}>
       <View style={{ paddingHorizontal: 24, paddingTop: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={{ color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase' }}>Step 1 of 3</Text>
         <Pressable onPress={next}>

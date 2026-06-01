@@ -34,7 +34,7 @@ export default function Login() {
             <View style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: '#14B8A6', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
               <Dumbbell color="#042F2A" size={24} />
             </View>
-            <Text style={{ color: '#F1F5F9', fontSize: 28, fontWeight: '700', letterSpacing: -0.3 }}>Welcome back</Text>
+            <Text style={{ color: '#F1F5F9', fontSize: 30, fontWeight: '700', letterSpacing: -0.4 }}>Welcome back</Text>
             <Text style={{ color: '#94A3B8', fontSize: 14, marginTop: 4, marginBottom: 28 }}>Pick up where you left off.</Text>
             <View style={{ gap: 12 }}>
               <Input
@@ -57,6 +57,11 @@ export default function Login() {
                   </Pressable>
                 }
               />
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 12 }}>
+              <Pressable onPress={() => {}} hitSlop={8}>
+                <Text style={{ color: '#14B8A6', fontSize: 14, fontWeight: '600' }}>Forgot password?</Text>
+              </Pressable>
             </View>
             {signIn.isError ? <View style={{ marginTop: 16 }}><ErrorBanner message="Invalid email or password." /></View> : null}
           </View>

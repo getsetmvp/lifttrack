@@ -34,7 +34,7 @@ export default function Register() {
             <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" onPress={() => router.back()} variant="ghost" />
           </View>
           <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24 }}>
-            <Text style={{ color: '#F1F5F9', fontSize: 28, fontWeight: '700', letterSpacing: -0.3 }}>Create account</Text>
+            <Text style={{ color: '#F1F5F9', fontSize: 30, fontWeight: '700', letterSpacing: -0.5 }}>Create account</Text>
             <Text style={{ color: '#94A3B8', fontSize: 14, marginTop: 4, marginBottom: 24 }}>30 seconds. No card needed.</Text>
             <View style={{ gap: 12 }}>
               <Input label="Name" value={name} onChangeText={setName} autoCapitalize="words" />
@@ -92,7 +92,7 @@ export default function Register() {
               </View>
               <Text style={{ flex: 1, color: '#94A3B8', fontSize: 12, lineHeight: 18 }}>
                 I agree to the <Text style={{ color: '#14B8A6', fontWeight: '700' }}>Terms</Text> and{' '}
-                <Text style={{ color: '#14B8A6', fontWeight: '700' }}>Privacy Policy</Text>.
+                <Text style={{ color: '#14B8A6', fontWeight: '700' }}>Privacy</Text>.
               </Text>
             </Pressable>
             {signUp.isError ? (

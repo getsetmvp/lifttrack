@@ -80,7 +80,7 @@ export default function RootLayout() {
             <Stack.Screen name="meal" options={{ presentation: 'modal' }} />
             <Stack.Screen name="exercise/[id]" />
           </Stack>
-          <StatusBar style="light" />
+          <StatusBar style="light" translucent={false} backgroundColor="#0F1115" />
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
