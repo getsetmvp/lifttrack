@@ -38,14 +38,15 @@ export default function MealCamera() {
 
   const today = new Date().toISOString().slice(0, 10);
 
-  // Resize + recompress before upload so /ai/parse-meal payload stays small.
-  // 1024px max edge + JPEG 0.55 keeps photos ~120-220 KB base64 — well within
-  // server body-parser limits and AI gateway image-tokens budget.
+  // Resize + recompress before upload. The AskChimps vision gateway rejects
+  // payloads above ~50KB base64 with HTTP 500. 640px max edge + JPEG 0.45
+  // yields ~25-40KB base64 — fits the budget and still gives the model enough
+  // detail to identify food items.
   const shrink = async (uri: string): Promise<{ uri: string; base64: string }> => {
     const out = await ImageManipulator.manipulateAsync(
       uri,
-      [{ resize: { width: 1024 } }],
-      { compress: 0.55, format: ImageManipulator.SaveFormat.JPEG, base64: true },
+      [{ resize: { width: 640 } }],
+      { compress: 0.45, format: ImageManipulator.SaveFormat.JPEG, base64: true },
     );
     return { uri: out.uri, base64: out.base64 ?? '' };
   };
