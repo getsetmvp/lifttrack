@@ -6,8 +6,8 @@ export default function StatsLayout() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: '#0F1115' },
-        animation: 'simple_push',
-        animationDuration: 220,
+        animation: 'fade',
+        animationDuration: 180,
       }}
     />
   );
