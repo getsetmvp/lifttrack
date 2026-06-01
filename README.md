@@ -8,15 +8,22 @@
 |---|---|
 | Type | `frontend-mobile` (internal monorepo: `apps/mobile/` day-1, future `apps/web/`) |
 | Visibility | Private |
-| Status | Phase 5 (~70% complete). End-to-end walkable on emulator. Workout-w/-exercises blocked on R2 asset seed. |
-| Branch model | **direct-to-main, NO PRs** (user lock 2026-06-01) |
-| Expo SDK | **54** (locked; matches Expo Go installed on emulator-5554) |
+| Status | **Phase 5 ~95% complete · entering Phase 7 (EAS preview APK).** Daily-driveable on Expo Go on AVD + Vivo V2437. Workout / meal / AI flows live end-to-end. 81-exercise catalog seeded. |
+| Pipeline target | **Play Store launch in ~14 days** — see `~/Productivity/hustle/liftfuel/play-store-launch.md` |
+| Branch model | **direct-to-main, NO PRs** (mobile only; user lock 2026-06-01). Server is PR-only / squash-merge. |
+| Expo SDK | **54** (locked; matches Expo Go on emulator) |
+| Stack | Expo Router v6 (file-based) · React Native 0.81 · NativeWind v4 · Zustand · TanStack Query v5 · expo-secure-store · `react-native-screens` w/ `enableScreens(false)` JS stack |
 | Backend tenant | `liftfuel` on `https://server.getsetmvp.com/liftfuel/v1/*` |
 | OTA system | Cloudflare via [yashguptadeveloper/ota-server](https://github.com/yashguptadeveloper/ota-server) — NOT EAS Update |
-| Distribution | EAS Build → APK day-1 (Play Store internal testing later) |
+| Distribution | EAS Build → preview APK (next) → Play Store internal track |
+| Test user | `loadtest-1780313214756@liftfuel.dev` / `LoadTest2026Aa` (45 workouts, 48 PRs seeded) |
 | Owner | Yash |
 | Founded | 2026-05-31 |
-| Last verified on emulator | 2026-06-01 (auth → onboarding → today → tabs → day creation) |
+| Last verified | 2026-06-01 — full app walk: auth + onboarding + today + train + active workout (start/log set/rest timer/finish) + fuel + camera/AI parse + stats + profile, all live on phone via Expo Go |
+
+## Snapshot for fresh sessions
+
+Authoritative state lives in **`~/Productivity/hustle/liftfuel/STATE.md`** (auto-updated each session). The launch plan lives in **`~/Productivity/hustle/liftfuel/play-store-launch.md`**. Read those two first.
 
 ## Quick run (Android emulator)
 
@@ -34,31 +41,34 @@ adb -s <emu> shell am start -a android.intent.action.VIEW -d "exp://127.0.0.1:80
 # Force-stop + relaunch to pick up code changes (Expo Go caches manifest)
 ```
 
-## What's live (verified)
+## What's live (verified 2026-06-01)
 
 | Surface | State |
 |---|---|
 | Auth: welcome / login / register w/ password strength | ✅ live |
-| Onboarding: unit → goal → body | ✅ live, persists to `/users/me` + `/body-metrics` |
-| Today tab (live data) | ✅ live |
-| Train tab + routines/weeks/days list+detail+new | ✅ live (UI), needs exercise catalog for full UX |
-| Active workout + set logger sheet + complete | ✅ live (UI), needs exercises |
-| Fuel tab — 7 meal slots + macro rings + camera FAB | ✅ live (UI), camera flow needs device |
-| Stats landing + AI chat (live `/ai/ask`) | ✅ live |
-| Profile + settings + body metrics + about | ✅ live |
-| Server tenant (signup/login/refresh/me/days/weeks/routines/workouts/meals/analytics/ai) | ✅ live |
+| Onboarding: unit → goal → body | ✅ live |
+| Today: routine subtitle w/ Day-N · workout-completed state · mini-rings · streak | ✅ live |
+| Train: active routine, library counts, routines/weeks/days list+detail+new | ✅ live |
+| Active workout: timer + per-set kg/lb numpad + drop-set sheet + rest-timer auto-trigger + PR detection | ✅ live |
+| Exercise picker (search + muscle filter) | ✅ live; GIF thumbs pending R2 |
+| Fuel: 7 slots, macro ring, date nav, camera FAB | ✅ live |
+| Camera: capture/gallery + 640px shrink + AI parse-meal → meal detail | ✅ live; photo upload pending server endpoint |
+| Stats: landing + strength/volume/nutrition/correlation sub-pages + AI ask | ✅ live (sub-pages w/ empty-state placeholders for charts) |
+| Profile + edit + body-metrics (chart + entries) + settings + about | ✅ live |
+| Pull-to-refresh on 10 list screens · safeBack helper on 28 screens · tab tap resets · slide_no animation w/ DarkTheme | ✅ live |
+| Server tenant (auth/users/days/weeks/routines/workouts/meals/exercises/analytics/ai) | ✅ live; 81-entry catalog seeded |
 
-## What's NOT live yet (P1 backlog in planning tasks.md)
+## What's NOT live yet (Play Store launch blockers, ordered in `play-store-launch.md`)
 
-- Exercise catalog (R2 bucket creation + 82 GIF upload + seed Exercise table)
-- Meal camera flow (needs real device)
-- Exercise picker w/ search
-- Drop-set sheet (full N-drop UI)
-- Rest-timer overlay route
-- Stats sub-pages: strength / volume / nutrition / correlation
-- Light theme (locked deferred per design D-LIT)
-- Jest + RNTL tests
-- Sentry RN
+- R2 bucket + exercise GIFs + meal photo upload (Stage 1)
+- Password reset + account deletion server + mobile (Stage 1-2)
+- Sentry RN crash tracking (Stage 3)
+- Jest + RNTL sanity tests (Stage 3)
+- Privacy + ToS hosted URLs + linked (Stage 4)
+- EAS Build preview + production AAB (Stage 5)
+- Play Console listing + AAB upload (Stage 6)
+- 14-day internal + closed testing track validation (Stage 7-8)
+- Light theme (deferred v1.1 per D-LIT lock)
 
 ## What it is
 
@@ -77,7 +87,7 @@ Personal fitness + nutrition tracker that **correlates** the two: log every rep 
 
 | Layer | Choice |
 |---|---|
-| Framework | Expo SDK 53 (managed) + React Native 0.79 |
+| Framework | Expo SDK 54 (managed) + React Native 0.81 |
 | Language | TypeScript strict |
 | Routing | Expo Router (file-based) |
 | Styling | NativeWind v4 (Tailwind) + Soft-Dark Modern palette (teal + orange) |

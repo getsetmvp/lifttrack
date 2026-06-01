@@ -4,28 +4,21 @@ Context for Claude when working in this repo.
 
 ## What this repo is
 
-Personal fitness + nutrition tracker mobile app. Expo + React Native + shared backend tenant. Phase 3 boilerplate ships in this commit; Phase 4 (server tenant) + Phase 5 (parallel feature agents) follow.
+Personal fitness + nutrition tracker mobile app. Expo + React Native + shared backend tenant. **Phase 5 ~95% complete · entering Phase 7 (EAS preview APK).** Currently in Play Store launch sequence — see `~/Productivity/hustle/liftfuel/play-store-launch.md`.
 
-## Required reading
+## Required reading on session start (IN THIS ORDER)
 
-- **Repo type**: `frontend-mobile`
-- **Type spec**: `~/productivity/standards/frontend-mobile.md`
-- **OTA system**: `~/productivity/standards/cloudflare-ota.md`
-- **Pipeline**: `~/productivity/standards/app-development-pipeline.md` (10 phases, currently Phase 3)
-- **Env files**: `~/productivity/standards/env-files.md`
-- **Design (FROZEN)**: `~/productivity/hustle/liftfuel/design.md`
-- **Hi-fi mockups**: `~/productivity/hustle/liftfuel/mockups/index.html` (40 screens, browser-viewable)
+1. **`~/Productivity/hustle/liftfuel/STATE.md`** — last-known-state snapshot (what works now, what doesn't, test creds, emulator/device IDs)
+2. **`~/Productivity/hustle/liftfuel/play-store-launch.md`** — current active plan (9 stages to Play Store · DOD per step)
+3. `~/Productivity/hustle/liftfuel/tasks.md` — ordered todos mirroring launch plan
+4. `README.md` (this repo) — repo state + quick run
+5. `CONVENTIONS.md` (this repo) — repo-local rules
+6. `~/Productivity/hustle/liftfuel/design.md` — FROZEN spec (visual system, IA, screens, data model, API, AI prompts)
+7. `~/Productivity/hustle/liftfuel/mockup-audit.md` — per-screen pixel-parity sign-off
+8. `packages/shared-types/src/index.ts` — DTO contract (mobile ↔ server)
+9. `apps/mobile/src/lib/api.ts` — fetch wrapper (auto JWT refresh)
 
-When proposing changes, follow design.md. **The design is FROZEN** — changes require ADR + agent re-scoping.
-
-## Read order on session start
-
-1. `README.md`
-2. `CONVENTIONS.md`
-3. `~/productivity/hustle/liftfuel/design.md` — full spec (visual system, IA, screens, data model, API, AI prompts, auth, tests)
-4. `~/productivity/hustle/liftfuel/design.md` § 20 — Phase 5 partition (which agent owns what)
-5. `packages/shared-types/src/index.ts` — DTOs locked
-6. `apps/mobile/src/lib/api.ts` — fetch wrapper pattern
+The design is FROZEN — changes require ADR + agent re-scoping.
 
 ## Project layout
 
@@ -136,9 +129,16 @@ packages/shared-types/
 
 ### Workflow (user lock 2026-06-01)
 - **NO PRs on this repo** — commit + push direct to `main`. User explicit rule.
-- Phase 5 ~70% done. Remaining: meal camera, exercise picker w/ catalog, drop-set sheet full UI, rest-timer overlay route, stats sub-pages.
-- Exercise catalog NOT seeded yet — R2 asset migration P1 task pending. Workout flow w/ real exercises blocked.
+- Server (`yashguptadeveloper/server`) IS PR-only / squash-merge — different repo.
+- Phase 5 ~95% done. Current focus: Play Store launch sequence (Stage 1 = R2 + server gaps).
+- 81-exercise catalog seeded via server PR #6 (merged 2026-06-01). `gifKey` still NULL — Cloudflare R2 bucket pending creation (Stage 1.1 of launch plan).
 - Light theme deferred per design D-LIT lock (v1.1).
+
+### Navigation pitfalls landed 2026-06-01
+- **Stack animation = `'none'`** (set in every `_layout.tsx`). White-flash on back was caused by react-native-screens native surface clearing during animation. Combined w/ `enableScreens(false)` (JS stack) + `DarkTheme` nav provider + absolute dark backdrop + `expo-system-ui` window bg + `freezeOnBlur: false`. Don't re-enable native screens or any animation without re-verifying no flash on phone.
+- **`safeBack(fallback)` helper** in `src/lib/safeBack.ts` — use everywhere instead of `router.back()`. Falls back to `router.replace(fallback)` when stack is empty (deep-link landings, modal replaces). Applied across 28 screens.
+- **Tab tap resets stack to tab root** — `(tabs)/_layout.tsx` uses `listeners` w/ `e.preventDefault()` + `router.navigate(rootPath)` per tab. Don't restore default Tabs behavior.
+- **Pull-to-refresh** via `useRefresh(...queries)` helper in `src/lib/useRefresh.ts`. Wired on 10 list/dashboard screens.
 
 ## Where related stuff lives
 
