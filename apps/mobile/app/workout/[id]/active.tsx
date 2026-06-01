@@ -1,7 +1,7 @@
 // Active workout — design.md § 8.6.
 
 import { useEffect, useState } from 'react';
-import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import {
@@ -31,6 +31,8 @@ export default function ActiveWorkout() {
   const [currentWeId, setCurrentWeId] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [dropOpen, setDropOpen] = useState(false);
+  const [dropTargetSetId, setDropTargetSetId] = useState<string | null>(null);
+  const [dropList, setDropList] = useState<{ weightKg: string; reps: string }[]>([]);
   const [weightVal, setWeightVal] = useState('');
   const [repsVal, setRepsVal] = useState('');
   const [warmup, setWarmup] = useState(false);
@@ -78,6 +80,28 @@ export default function ActiveWorkout() {
       await logSet.mutateAsync({ weId: currentWeId, dto: { weightKg, reps, isWarmup: warmup, isFailure: failure } });
       haptic.light();
       setSheetOpen(false);
+
+      // Auto-start rest timer after non-warmup sets.
+      if (!warmup) {
+        const we = exercises.find((e) => e.id === currentWeId);
+        const restSeconds = (we as any)?.dayExercise?.restSeconds
+          ?? (we as any)?.restSeconds
+          ?? 90;
+        const exName = we?.exercise?.name ?? 'Next set';
+        const nextSetIdx = (we?.sets?.length ?? 0) + 1;
+        const targetReps = (we as any)?.dayExercise?.targetRepsMin
+          ? `${(we as any).dayExercise.targetRepsMin}-${(we as any).dayExercise.targetRepsMax}`
+          : null;
+        const targetStr = targetReps ? `${formatWeight(weightKg, unit)} × ${targetReps}` : null;
+        router.push({
+          pathname: '/rest-timer' as any,
+          params: {
+            seconds: String(restSeconds),
+            next: `Next: Set ${nextSetIdx} of ${exName}`,
+            ...(targetStr ? { target: targetStr } : {}),
+          },
+        });
+      }
       setWeightVal('');
       setRepsVal('');
       setWarmup(false);
@@ -158,6 +182,10 @@ export default function ActiveWorkout() {
                   leadingIcon={<TrendingDown color="#F1F5F9" size={14} />}
                   onPress={() => {
                     setCurrentWeId(we.id);
+                    // Default to most-recent non-warmup set in this exercise.
+                    const topSet = [...sets].reverse().find((s) => !s.isWarmup);
+                    setDropTargetSetId(topSet?.id ?? null);
+                    setDropList([{ weightKg: topSet ? String(Math.round(topSet.weightKg * 10) / 10 * 0.875) : '', reps: '' }]);
                     setDropOpen(true);
                   }}
                 />
@@ -241,18 +269,125 @@ export default function ActiveWorkout() {
         </View>
       </Modal>
 
-      {/* Drop set sheet — simplified */}
+      {/* Drop set sheet */}
       <Modal visible={dropOpen} transparent animationType="slide" onRequestClose={() => setDropOpen(false)}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' }}>
-          <View style={{ backgroundColor: '#21252E', borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: 20, gap: 12 }}>
+          <View style={{ backgroundColor: '#21252E', borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: 20, gap: 12, maxHeight: '85%' }}>
+            <View style={{ alignItems: 'center', marginBottom: 4 }}>
+              <View style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: 'rgba(148,163,184,0.30)' }} />
+            </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={{ color: '#F1F5F9', fontSize: 18, fontWeight: '700' }}>Drop set</Text>
+              <View>
+                <Text style={{ color: '#F1F5F9', fontSize: 18, fontWeight: '700' }}>Drop set</Text>
+                <Text style={{ color: '#94A3B8', fontSize: 11 }}>
+                  {exercises.find((e) => e.id === currentWeId)?.exercise?.name ?? '—'}
+                </Text>
+              </View>
               <Pressable onPress={() => setDropOpen(false)}><X color="#94A3B8" size={20} /></Pressable>
             </View>
-            <Text style={{ color: '#94A3B8', fontSize: 13 }}>
-              Add a top set first via the Set Logger; tap the set to attach drops. Full drop UI lands w/ Phase 5.2 polish.
-            </Text>
-            <Button label="Got it" variant="primary-teal" fullWidth onPress={() => setDropOpen(false)} />
+            {(() => {
+              const we = exercises.find((e) => e.id === currentWeId);
+              const topSet = we?.sets?.find((s) => s.id === dropTargetSetId);
+              if (!topSet) {
+                return (
+                  <Text style={{ color: '#94A3B8', fontSize: 13, paddingVertical: 8 }}>
+                    Log a top set first via the set logger, then tap Drop set again.
+                  </Text>
+                );
+              }
+              return (
+                <View style={{ gap: 10 }}>
+                  <Text style={{ color: '#94A3B8', fontSize: 10, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase' }}>Top set</Text>
+                  <View style={{ padding: 12, borderRadius: 12, backgroundColor: '#181B22', borderWidth: 1, borderColor: '#2A2F3A', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_700Bold', fontSize: 18 }}>
+                      {formatWeight(topSet.weightKg, unit)} × {topSet.reps}
+                    </Text>
+                    {topSet.isPr ? <Text style={{ color: '#10B981', fontSize: 10, fontWeight: '800' }}>PR</Text> : null}
+                  </View>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
+                    <Text style={{ color: '#94A3B8', fontSize: 10, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase' }}>Drops</Text>
+                    <Text style={{ color: '#64748B', fontSize: 10 }}>max 5</Text>
+                  </View>
+                  <ScrollView style={{ maxHeight: 280 }} contentContainerStyle={{ gap: 8 }}>
+                    {dropList.map((d, i) => (
+                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <View style={{ width: 32, height: 40, borderRadius: 8, backgroundColor: 'rgba(249,115,22,0.18)', alignItems: 'center', justifyContent: 'center' }}>
+                          <Text style={{ color: '#F97316', fontFamily: 'JetBrainsMono_700Bold', fontSize: 11 }}>D{i + 1}</Text>
+                        </View>
+                        <TextInput
+                          value={d.weightKg}
+                          onChangeText={(v) => {
+                            const next = [...dropList];
+                            next[i] = { ...next[i]!, weightKg: v };
+                            setDropList(next);
+                          }}
+                          keyboardType="decimal-pad"
+                          placeholder={unit === 'KG' ? 'kg' : 'lb'}
+                          placeholderTextColor="#64748B"
+                          style={{ flex: 1, height: 40, paddingHorizontal: 10, borderRadius: 8, backgroundColor: '#181B22', borderWidth: 1, borderColor: '#2A2F3A', color: '#F1F5F9', fontFamily: 'JetBrainsMono_700Bold', fontSize: 14 }}
+                        />
+                        <Text style={{ color: '#94A3B8' }}>×</Text>
+                        <TextInput
+                          value={d.reps}
+                          onChangeText={(v) => {
+                            const next = [...dropList];
+                            next[i] = { ...next[i]!, reps: v.replace(/[^0-9]/g, '') };
+                            setDropList(next);
+                          }}
+                          keyboardType="number-pad"
+                          placeholder="reps"
+                          placeholderTextColor="#64748B"
+                          style={{ width: 60, height: 40, paddingHorizontal: 10, borderRadius: 8, backgroundColor: '#181B22', borderWidth: 1, borderColor: '#2A2F3A', color: '#F1F5F9', fontFamily: 'JetBrainsMono_700Bold', fontSize: 14, textAlign: 'center' }}
+                        />
+                        <Pressable
+                          onPress={() => setDropList(dropList.filter((_, j) => j !== i))}
+                          style={{ width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }}
+                          hitSlop={6}
+                        >
+                          <X color="#EF4444" size={16} />
+                        </Pressable>
+                      </View>
+                    ))}
+                  </ScrollView>
+                  {dropList.length < 5 ? (
+                    <Pressable
+                      onPress={() => setDropList([...dropList, { weightKg: '', reps: '' }])}
+                      style={{ padding: 12, borderRadius: 12, borderWidth: 2, borderStyle: 'dashed', borderColor: 'rgba(249,115,22,0.4)', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 6 }}
+                    >
+                      <Plus color="#F97316" size={14} />
+                      <Text style={{ color: '#F97316', fontWeight: '700', fontSize: 13 }}>Add drop</Text>
+                    </Pressable>
+                  ) : null}
+                  <Button
+                    label={setDrops.isPending ? 'Saving…' : 'Finish set'}
+                    variant="primary-orange"
+                    fullWidth
+                    loading={setDrops.isPending}
+                    onPress={async () => {
+                      const validDrops = dropList
+                        .map((d, i) => ({
+                          dropIndex: i,
+                          weightKg: unit === 'LB' ? parseFloat(d.weightKg || '0') / 2.20462 : parseFloat(d.weightKg || '0'),
+                          reps: parseInt(d.reps || '0', 10),
+                        }))
+                        .filter((d) => d.weightKg > 0 && d.reps > 0);
+                      if (validDrops.length === 0 || !dropTargetSetId) {
+                        Alert.alert('Add at least one drop', 'Fill weight + reps for each drop row.');
+                        return;
+                      }
+                      try {
+                        await setDrops.mutateAsync({ setId: dropTargetSetId, drops: validDrops });
+                        haptic.light();
+                        setDropOpen(false);
+                        setDropList([]);
+                      } catch (e: any) {
+                        Alert.alert('Save failed', e?.message ?? 'Unknown error');
+                      }
+                    }}
+                  />
+                </View>
+              );
+            })()}
           </View>
         </View>
       </Modal>
