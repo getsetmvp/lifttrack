@@ -4,7 +4,7 @@ import { RefreshControl, ScrollView, Text, View, Pressable } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Svg, { Circle } from 'react-native-svg';
-import { Camera, ChevronRight, Dumbbell, Flame, Play } from 'lucide-react-native';
+import { Camera, Check, ChevronRight, Dumbbell, Flame, Play } from 'lucide-react-native';
 import {
   Avatar,
   Button,
@@ -57,6 +57,19 @@ export default function Today() {
   );
 
   const targets = me.data?.macroOverride ?? { kcal: 2400, proteinG: 180, carbsG: 280, fatG: 75 };
+
+  // Has a workout for today's routine day already been finished?
+  // Match either by dayId or, for free workouts/legacy data, by today's startedAt + dayName.
+  const todayDayId = todayRes.data?.day?.id ?? null;
+  const todayKey = TODAY;
+  const completedTodayWorkout = (recent.data ?? []).find((w) => {
+    if (!w.endedAt) return false;
+    const startedDate = (w.startedAt ?? '').slice(0, 10);
+    if (startedDate !== todayKey) return false;
+    if (todayDayId && w.dayId === todayDayId) return true;
+    if (!todayDayId && !w.dayId) return false;
+    return w.dayName && todayRes.data?.day?.name && w.dayName === todayRes.data.day.name;
+  });
 
   const startToday = async () => {
     const r = activeRoutine.data;
@@ -119,6 +132,45 @@ export default function Today() {
               onPress={() =>
                 start.mutateAsync({}).then((w) => router.push(`/workout/${w.id}/active`))
               }
+            />
+          </Card>
+        ) : completedTodayWorkout ? (
+          <Card accent="teal">
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <View
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 14,
+                  backgroundColor: '#14B8A6',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Check color="#042F2A" size={16} />
+              </View>
+              <Text style={{ color: '#14B8A6', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase' }}>
+                Workout completed
+              </Text>
+            </View>
+            <Text style={{ color: '#F1F5F9', fontSize: 20, fontWeight: '700', marginTop: 8 }}>
+              {todayRes.data?.day?.name ?? 'Today'}
+            </Text>
+            <Text style={{ color: '#94A3B8', fontFamily: 'JetBrainsMono_500Medium', fontSize: 12, marginTop: 2 }}>
+              {Math.round(((completedTodayWorkout.totalVolume ?? 0) / 1000) * 10) / 10} t · {completedTodayWorkout.prCount} PR
+              {completedTodayWorkout.endedAt
+                ? ` · ${Math.round((new Date(completedTodayWorkout.endedAt).getTime() - new Date(completedTodayWorkout.startedAt).getTime()) / 60000)} min`
+                : ''}
+            </Text>
+            <Text style={{ color: '#64748B', fontSize: 11, marginTop: 6 }}>
+              Next workout: tomorrow per active routine.
+            </Text>
+            <View style={{ height: 12 }} />
+            <Button
+              label="View workout"
+              variant="secondary"
+              fullWidth
+              onPress={() => router.push(`/workout/${completedTodayWorkout.id}/complete`)}
             />
           </Card>
         ) : (
