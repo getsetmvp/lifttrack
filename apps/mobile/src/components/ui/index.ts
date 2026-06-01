@@ -1,4 +1,4 @@
-// Atom barrel. Phase 5.2 agents import from here.
+// Atom barrel. All shared UI primitives export from here.
 
 export { Button } from './Button';
 export type { ButtonVariant, ButtonSize } from './Button';
@@ -8,7 +8,6 @@ export { Chip, ChipGroup } from './Chip';
 export type { ChipTone } from './Chip';
 export { SegmentedControl } from './SegmentedControl';
 export { Input } from './Input';
-export { NumberPad } from './NumberPad';
 export { MacroRing } from './MacroRing';
 export { RestTimerArc } from './RestTimerArc';
 export { SetRow, PrBadge } from './SetRow';

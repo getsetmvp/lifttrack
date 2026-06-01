@@ -14,7 +14,7 @@ import {
   TrendingDown,
   X,
 } from 'lucide-react-native';
-import { Button, Card, IconButton, NumberPad, ProgressBar, SetRow, SegmentedControl } from '../../../src/components/ui';
+import { Button, Card, IconButton, ProgressBar, SetRow, SegmentedControl } from '../../../src/components/ui';
 import { useUpdateWorkout, useWorkout, useLogSet, useSetDrops } from '../../../src/api/workouts';
 import { formatDuration, formatWeight } from '../../../src/lib/format';
 import { useUnitStore } from '../../../src/store/useUnitStore';

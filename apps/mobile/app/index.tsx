@@ -1,5 +1,4 @@
 // Entry — gates auth: bounce to (auth)/welcome if no token, else (tabs)/today.
-// Phase 5.2 Agent B replaces the auth-state hydration logic.
 
 import { useEffect, useState } from 'react';
 import { Redirect } from 'expo-router';

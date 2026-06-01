@@ -8,7 +8,7 @@ Personal fitness + nutrition tracker mobile app. Expo + React Native + shared ba
 
 ## Required reading on session start (IN THIS ORDER)
 
-1. **`~/Productivity/hustle/liftfuel/STATE.md`** — last-known-state snapshot (what works now, what doesn't, test creds, emulator/device IDs)
+1. **`~/Productivity/hustle/liftfuel/state.md`** — last-known-state snapshot (what works now, what doesn't, test creds, emulator/device IDs)
 2. **`~/Productivity/hustle/liftfuel/play-store-launch.md`** — current active plan (9 stages to Play Store · DOD per step)
 3. `~/Productivity/hustle/liftfuel/tasks.md` — ordered todos mirroring launch plan
 4. `README.md` (this repo) — repo state + quick run

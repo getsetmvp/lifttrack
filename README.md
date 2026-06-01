@@ -23,7 +23,7 @@
 
 ## Snapshot for fresh sessions
 
-Authoritative state lives in **`~/Productivity/hustle/liftfuel/STATE.md`** (auto-updated each session). The launch plan lives in **`~/Productivity/hustle/liftfuel/play-store-launch.md`**. Read those two first.
+Authoritative state lives in **`~/Productivity/hustle/liftfuel/state.md`** (auto-updated each session). The launch plan lives in **`~/Productivity/hustle/liftfuel/play-store-launch.md`**. Read those two first.
 
 ## Quick run (Android emulator)
 
