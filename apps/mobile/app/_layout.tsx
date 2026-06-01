@@ -4,6 +4,13 @@
 import 'react-native-reanimated';
 import '../src/styles/global.css';
 
+import { enableScreens } from 'react-native-screens';
+// Disable native screens. native-stack pops on Android show a brief white flash
+// on the outgoing screen because the platform clears the native surface before
+// the JS background paints. JS-driven stack avoids that — all screens stay in
+// the same RN view tree throughout the animation. Tiny perf cost vs no flash.
+enableScreens(false);
+
 import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
