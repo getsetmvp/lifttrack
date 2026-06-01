@@ -35,6 +35,7 @@ export default function ActiveWorkout() {
   const [dropList, setDropList] = useState<{ weightKg: string; reps: string }[]>([]);
   const [weightVal, setWeightVal] = useState('');
   const [repsVal, setRepsVal] = useState('');
+  const [activeField, setActiveField] = useState<'WEIGHT' | 'REPS'>('WEIGHT');
   const [warmup, setWarmup] = useState(false);
   const [failure, setFailure] = useState(false);
   const [unitTab, setUnitTab] = useState<'KG' | 'LB'>(unit);
@@ -75,7 +76,10 @@ export default function ActiveWorkout() {
     if (!currentWeId) return;
     const weightKg = unitTab === 'LB' ? parseFloat(weightVal || '0') / 2.20462 : parseFloat(weightVal || '0');
     const reps = parseInt(repsVal || '0', 10);
-    if (weightKg <= 0 || reps <= 0) return;
+    if (weightKg <= 0 || reps <= 0) {
+      Alert.alert('Enter weight + reps', 'Both weight and reps must be greater than zero.');
+      return;
+    }
     try {
       await logSet.mutateAsync({ weId: currentWeId, dto: { weightKg, reps, isWarmup: warmup, isFailure: failure } });
       haptic.light();
@@ -224,19 +228,19 @@ export default function ActiveWorkout() {
             </View>
 
             <View style={{ flexDirection: 'row', gap: 8 }}>
-              <View style={{ flex: 1 }}>
+              <Pressable style={{ flex: 1 }} onPress={() => setActiveField('WEIGHT')}>
                 <Text style={{ color: '#94A3B8', fontSize: 10, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase', textAlign: 'center', marginBottom: 4 }}>Weight</Text>
-                <View style={{ height: 56, backgroundColor: '#181B22', borderRadius: 12, borderWidth: 2, borderColor: '#14B8A6', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 4 }}>
+                <View style={{ height: 56, backgroundColor: '#181B22', borderRadius: 12, borderWidth: 2, borderColor: activeField === 'WEIGHT' ? '#14B8A6' : '#2A2F3A', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 4 }}>
                   <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_700Bold', fontSize: 22 }}>{weightVal || '0'}</Text>
                   <Text style={{ color: '#94A3B8', fontFamily: 'JetBrainsMono_500Medium', fontSize: 12 }}>{unitTab === 'KG' ? 'kg' : 'lb'}</Text>
                 </View>
-              </View>
-              <View style={{ flex: 1 }}>
+              </Pressable>
+              <Pressable style={{ flex: 1 }} onPress={() => setActiveField('REPS')}>
                 <Text style={{ color: '#94A3B8', fontSize: 10, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase', textAlign: 'center', marginBottom: 4 }}>Reps</Text>
-                <View style={{ height: 56, backgroundColor: '#181B22', borderRadius: 12, borderWidth: 1, borderColor: '#2A2F3A', alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ height: 56, backgroundColor: '#181B22', borderRadius: 12, borderWidth: 2, borderColor: activeField === 'REPS' ? '#14B8A6' : '#2A2F3A', alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_700Bold', fontSize: 22 }}>{repsVal || '0'}</Text>
                 </View>
-              </View>
+              </Pressable>
             </View>
 
             <View>
@@ -258,15 +262,11 @@ export default function ActiveWorkout() {
               </Pressable>
             </View>
 
-            <PadFor target={weightVal} onChange={setWeightVal} />
-            <View style={{ flexDirection: 'row', gap: 6 }}>
-              <Pressable onPress={() => setRepsVal(String(Math.max(0, parseInt(repsVal || '0', 10) - 1)))} style={{ flex: 1, height: 36, backgroundColor: '#21252E', borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_600SemiBold', fontSize: 14 }}>−1 rep</Text>
-              </Pressable>
-              <Pressable onPress={() => setRepsVal(String(parseInt(repsVal || '0', 10) + 1))} style={{ flex: 1, height: 36, backgroundColor: '#21252E', borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_600SemiBold', fontSize: 14 }}>+1 rep</Text>
-              </Pressable>
-            </View>
+            {activeField === 'WEIGHT' ? (
+              <PadFor target={weightVal} onChange={setWeightVal} mode="WEIGHT" />
+            ) : (
+              <PadFor target={repsVal} onChange={setRepsVal} mode="REPS" />
+            )}
 
             <Button label="Save set" variant="primary-teal" fullWidth onPress={submitSet} loading={logSet.isPending} />
           </View>
@@ -399,10 +399,11 @@ export default function ActiveWorkout() {
   );
 }
 
-function PadFor({ target, onChange }: { target: string; onChange: (v: string) => void }) {
+function PadFor({ target, onChange, mode }: { target: string; onChange: (v: string) => void; mode: 'WEIGHT' | 'REPS' }) {
+  const allowDot = mode === 'WEIGHT';
   const push = (d: string) => {
     if (d === '.') {
-      if (target.includes('.')) return;
+      if (!allowDot || target.includes('.')) return;
       onChange(target === '' ? '0.' : target + '.');
       return;
     }
@@ -411,24 +412,30 @@ function PadFor({ target, onChange }: { target: string; onChange: (v: string) =>
   const erase = () => onChange(target.length <= 1 ? '' : target.slice(0, -1));
   const inc = (delta: number) => {
     const cur = parseFloat(target || '0') + delta;
-    onChange(String(Math.max(0, Math.round(cur * 100) / 100)));
+    const next = Math.max(0, Math.round(cur * 100) / 100);
+    onChange(mode === 'REPS' ? String(Math.round(next)) : String(next));
   };
-  const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', 'del'];
+  const keys: string[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', allowDot ? '.' : '', '0', 'del'];
+  const increments = mode === 'WEIGHT' ? [-2.5, 2.5, 5] : [-1, 1, 5];
   return (
     <View>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-        {keys.map((k) => (
-          <Pressable
-            key={k}
-            onPress={() => (k === 'del' ? erase() : push(k))}
-            style={{ width: '32%', height: 48, borderRadius: 10, backgroundColor: '#181B22', alignItems: 'center', justifyContent: 'center' }}
-          >
-            <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_600SemiBold', fontSize: 20 }}>{k === 'del' ? '⌫' : k}</Text>
-          </Pressable>
-        ))}
+        {keys.map((k, i) =>
+          k === '' ? (
+            <View key={`empty-${i}`} style={{ width: '32%', height: 48 }} />
+          ) : (
+            <Pressable
+              key={k}
+              onPress={() => (k === 'del' ? erase() : push(k))}
+              style={{ width: '32%', height: 48, borderRadius: 10, backgroundColor: '#181B22', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_600SemiBold', fontSize: 20 }}>{k === 'del' ? '⌫' : k}</Text>
+            </Pressable>
+          ),
+        )}
       </View>
       <View style={{ flexDirection: 'row', gap: 6, marginTop: 6 }}>
-        {[-2.5, 2.5, 5].map((n) => (
+        {increments.map((n) => (
           <Pressable key={n} onPress={() => inc(n)} style={{ flex: 1, height: 40, borderRadius: 10, backgroundColor: 'rgba(20,184,166,0.15)', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ color: '#14B8A6', fontFamily: 'JetBrainsMono_600SemiBold', fontSize: 13 }}>{n > 0 ? `+${n}` : n}</Text>
           </Pressable>
