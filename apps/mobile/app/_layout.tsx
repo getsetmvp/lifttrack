@@ -25,8 +25,13 @@ import {
   JetBrainsMono_700Bold,
 } from '@expo-google-fonts/jetbrains-mono';
 import * as SplashScreen from 'expo-splash-screen';
+import * as SystemUI from 'expo-system-ui';
 
 import { useOTAUpdates } from '../hooks/useOTAUpdates';
+
+// Set native window background once at module load so back-nav transitions
+// don't flash the default white window between screens.
+SystemUI.setBackgroundColorAsync('#0F1115').catch(() => {});
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -72,7 +77,6 @@ export default function RootLayout() {
               contentStyle: { backgroundColor: '#0F1115' },
               animation: 'simple_push',
               animationDuration: 220,
-              gestureEnabled: true,
             }}
           >
             <Stack.Screen name="index" />

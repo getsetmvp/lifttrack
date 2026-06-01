@@ -10,7 +10,6 @@ export default function AuthLayout() {
         contentStyle: { backgroundColor: '#0F1115' },
         animation: 'simple_push',
         animationDuration: 220,
-        gestureEnabled: true,
       }}
     />
   );
