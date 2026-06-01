@@ -37,7 +37,7 @@ export function IconButton({
         onPress?.();
       }}
       disabled={disabled}
-      style={({ pressed }) => ({
+      style={{
         width: size,
         height: size,
         borderRadius: size / 2,
@@ -46,8 +46,8 @@ export function IconButton({
         borderColor: border,
         alignItems: 'center',
         justifyContent: 'center',
-        opacity: disabled ? 0.5 : pressed ? 0.7 : 1,
-      })}
+        opacity: disabled ? 0.5 : 1,
+      }}
     >
       {icon}
     </Pressable>

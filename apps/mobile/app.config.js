@@ -59,6 +59,7 @@ module.exports = ({ config }) => {
     plugins: [
       'expo-router',
       'expo-secure-store',
+      'expo-font',
       [
         'expo-camera',
         {
@@ -89,7 +90,7 @@ module.exports = ({ config }) => {
       ],
     ],
     experiments: {
-      typedRoutes: true,
+      typedRoutes: false,
     },
     extra: {
       env,

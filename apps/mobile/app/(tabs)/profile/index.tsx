@@ -112,12 +112,11 @@ function Row({
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => ({
+      style={{
         flexDirection: 'row',
         alignItems: 'center',
         padding: 12,
-        opacity: pressed ? 0.7 : 1,
-      })}
+      }}
     >
       <Text style={{ flex: 1, color: valueTone === 'bad' ? '#EF4444' : '#F1F5F9', fontSize: 14, fontWeight: '600' }}>
         {label}

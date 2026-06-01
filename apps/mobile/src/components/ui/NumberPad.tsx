@@ -53,15 +53,14 @@ export function NumberPad({
           <Pressable
             key={k}
             onPress={() => (k === 'del' ? erase() : push(k))}
-            style={({ pressed }) => ({
+            style={{
               width: '32%',
               height: 52,
               borderRadius: 10,
               backgroundColor: '#21252E',
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: pressed ? 0.7 : 1,
-            })}
+            }}
           >
             {k === 'del' ? (
               <Delete color="#F1F5F9" size={20} />
@@ -78,15 +77,14 @@ export function NumberPad({
           <Pressable
             key={n}
             onPress={() => applyIncrement(n)}
-            style={({ pressed }) => ({
+            style={{
               flex: 1,
               height: 44,
               borderRadius: 10,
               backgroundColor: 'rgba(20,184,166,0.15)',
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: pressed ? 0.7 : 1,
-            })}
+            }}
           >
             <Text
               style={{

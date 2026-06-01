@@ -28,7 +28,7 @@ export function SetRow({ setIndex, weightKg, reps, isWarmup, isPr, state, onPres
       <Pressable
         testID={testID}
         onPress={onPress}
-        style={({ pressed }) => ({
+        style={{
           flexDirection: 'row',
           alignItems: 'center',
           gap: 12,
@@ -37,8 +37,7 @@ export function SetRow({ setIndex, weightKg, reps, isWarmup, isPr, state, onPres
           borderWidth: 2,
           borderStyle: 'dashed',
           borderColor: 'rgba(20,184,166,0.40)',
-          opacity: pressed ? 0.6 : 1,
-        })}
+        }}
       >
         <SetBadge n={setIndex} accent />
         <Text style={{ flex: 1, color: '#14B8A6', fontWeight: '700', fontSize: 14 }}>Tap to log set</Text>

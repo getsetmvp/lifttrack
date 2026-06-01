@@ -44,7 +44,7 @@ export function Chip({ label, tone = 'neutral', selected = false, leadingIcon, o
   );
   if (onPress) {
     return (
-      <Pressable testID={testID} onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}>
+      <Pressable testID={testID} onPress={onPress}>
         {content}
       </Pressable>
     );
