@@ -8,6 +8,7 @@ import { ArrowLeft, Trophy } from 'lucide-react-native';
 import { Button, Card, IconButton, PrBadge } from '../../../src/components/ui';
 import { useUpdateWorkout, useWorkout } from '../../../src/api/workouts';
 import { formatDuration } from '../../../src/lib/format';
+import { safeBack } from '../../../src/lib/safeBack';
 
 const MOODS = ['😞', '😐', '🙂', '😄', '🔥'];
 
@@ -35,7 +36,7 @@ export default function Complete() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
-        <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/today')} />
         <Text style={{ color: '#F1F5F9', fontSize: 17, fontWeight: '700' }}>Workout complete</Text>
         <Pressable onPress={save}><Text style={{ color: '#14B8A6', fontSize: 14, fontWeight: '700' }}>Save</Text></Pressable>
       </View>

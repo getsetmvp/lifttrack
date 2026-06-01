@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { ArrowLeft, ExternalLink, Laptop, Moon, RefreshCw, Sun } from 'lucide-react-native';
 import { Card, IconButton, Switch } from '../../../src/components/ui';
 import { useState } from 'react';
+import { safeBack } from '../../../src/lib/safeBack';
 
 // expo-updates is only available in dev-builds / production APK, not in Expo Go.
 // Guard import so settings page renders w/o crashing.
@@ -28,7 +29,7 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingVertical: 12 }}>
-        <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/profile')} />
         <Text style={{ color: '#F1F5F9', fontSize: 22, fontWeight: '700' }}>Settings</Text>
       </View>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40, gap: 16 }}>

@@ -11,6 +11,7 @@ import type { Exercise } from '@liftfuel/shared-types';
 import { Card, IconButton, EmptyState, LoadingShimmer } from '../src/components/ui';
 import { useExercises } from '../src/api/exercises';
 import { useAddDayExercises, useDay } from '../src/api/days';
+import { safeBack } from '../src/lib/safeBack';
 
 const MUSCLES = ['ALL', 'CHEST', 'BACK', 'SHOULDERS', 'LEGS', 'ARMS', 'CORE'] as const;
 type Muscle = (typeof MUSCLES)[number];
@@ -41,7 +42,7 @@ export default function ExercisePicker() {
         },
       ],
     });
-    router.back();
+    safeBack(`/(tabs)/train/days/${dayId}` as any);
   };
 
   const rows: Exercise[] = (exercises.data?.pages ?? []).flatMap((p: any) => p.data ?? []);
@@ -50,7 +51,7 @@ export default function ExercisePicker() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top', 'bottom']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Close" variant="ghost" onPress={() => router.back()} />
+          <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Close" variant="ghost" onPress={() => safeBack(`/(tabs)/train/days/${dayId}` as any)} />
           <Text style={{ color: '#F1F5F9', fontSize: 18, fontWeight: '700' }}>Add exercise</Text>
         </View>
       </View>

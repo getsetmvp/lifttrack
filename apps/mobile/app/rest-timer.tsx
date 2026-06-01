@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { RestTimerArc } from '../src/components/ui';
 import { haptic } from '../src/lib/haptics';
+import { safeBack } from '../src/lib/safeBack';
 
 export default function RestTimer() {
   const { seconds, next, target } = useLocalSearchParams<{ seconds?: string; next?: string; target?: string }>();
@@ -27,7 +28,7 @@ export default function RestTimer() {
   useEffect(() => {
     if (remaining <= 0 && totalMs > 0) {
       haptic.success();
-      router.back();
+      safeBack('/(tabs)/today');
     }
   }, [remaining, totalMs]);
 
@@ -84,7 +85,7 @@ export default function RestTimer() {
           <Pressable
             onPress={() => {
               haptic.medium();
-              router.back();
+              safeBack('/(tabs)/today');
             }}
             style={{
               height: 56,

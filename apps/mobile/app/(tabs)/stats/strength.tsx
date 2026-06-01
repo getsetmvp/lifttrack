@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, Share2 } from 'lucide-react-native';
 import { Card, IconButton, SegmentedControl, EmptyState } from '../../../src/components/ui';
+import { safeBack } from '../../../src/lib/safeBack';
 
 type Range = '7D' | '30D' | '90D' | 'ALL';
 
@@ -17,7 +18,7 @@ export default function StrengthDetail() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
-          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/stats')} />
           <Text style={{ color: '#F1F5F9', fontSize: 22, fontWeight: '700', letterSpacing: -0.3 }} numberOfLines={1}>
             {exerciseName ?? 'Strength'}
           </Text>

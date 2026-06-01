@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import { Card, IconButton, EmptyState } from '../../../src/components/ui';
 import { useNutritionAnalytics } from '../../../src/api/analytics';
+import { safeBack } from '../../../src/lib/safeBack';
 
 export default function NutritionDetail() {
   const raw = useNutritionAnalytics('30d');
@@ -33,7 +34,7 @@ export default function NutritionDetail() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingVertical: 12 }}>
-        <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/stats')} />
         <Text style={{ color: '#F1F5F9', fontSize: 22, fontWeight: '700', letterSpacing: -0.3 }}>Nutrition</Text>
       </View>
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 80, gap: 12 }}>

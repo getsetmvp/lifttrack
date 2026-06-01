@@ -19,6 +19,7 @@ import { useUpdateWorkout, useWorkout, useLogSet, useSetDrops } from '../../../s
 import { formatDuration, formatWeight } from '../../../src/lib/format';
 import { useUnitStore } from '../../../src/store/useUnitStore';
 import { haptic } from '../../../src/lib/haptics';
+import { safeBack } from '../../../src/lib/safeBack';
 
 export default function ActiveWorkout() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -116,7 +117,7 @@ export default function ActiveWorkout() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
-        <IconButton icon={<ChevronDown color="#F1F5F9" size={20} />} accessibilityLabel="Dismiss" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<ChevronDown color="#F1F5F9" size={20} />} accessibilityLabel="Dismiss" variant="ghost" onPress={() => safeBack('/(tabs)/today')} />
         <View style={{ alignItems: 'center' }}>
           <Text style={{ color: '#94A3B8', fontSize: 11 }}>{w.data?.dayName ?? 'Free workout'}</Text>
           <Text style={{ color: '#F1F5F9', fontFamily: 'JetBrainsMono_700Bold', fontSize: 16 }}>{formatDuration(elapsedMs)}</Text>

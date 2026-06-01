@@ -7,6 +7,7 @@ import { router } from 'expo-router';
 import { ArrowLeft, ChevronDown } from 'lucide-react-native';
 import { Card, IconButton, SegmentedControl, EmptyState } from '../../../src/components/ui';
 import { useAnalyticsSummary } from '../../../src/api/analytics';
+import { safeBack } from '../../../src/lib/safeBack';
 
 export default function VolumeDetail() {
   const [unit, setUnit] = useState<'WEEK' | 'DAY'>('WEEK');
@@ -15,7 +16,7 @@ export default function VolumeDetail() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingVertical: 12 }}>
-        <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/stats')} />
         <Text style={{ color: '#F1F5F9', fontSize: 22, fontWeight: '700', letterSpacing: -0.3 }}>Volume</Text>
       </View>
       <View style={{ flexDirection: 'row', gap: 8, paddingHorizontal: 20, marginBottom: 12 }}>

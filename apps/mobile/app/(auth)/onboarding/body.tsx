@@ -9,6 +9,7 @@ import { Button, IconButton, Input } from '../../../src/components/ui';
 import { useUpdateUser } from '../../../src/api/users';
 import { useAddBodyMetric } from '../../../src/api/users';
 import { Dots } from './unit';
+import { safeBack } from '../../../src/lib/safeBack';
 
 export default function OnboardBody() {
   const [height, setHeight] = useState('');
@@ -34,7 +35,7 @@ export default function OnboardBody() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top', 'bottom']}>
       <View style={{ paddingHorizontal: 20, paddingTop: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(auth)/welcome')} />
         <Text style={{ color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase' }}>Step 3 of 3</Text>
         <Pressable onPress={() => router.replace('/(tabs)/today')}><Text style={{ color: '#94A3B8', fontSize: 13, fontWeight: '700' }}>Skip</Text></Pressable>
       </View>

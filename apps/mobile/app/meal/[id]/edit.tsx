@@ -7,6 +7,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Info, X } from 'lucide-react-native';
 import { IconButton, Input } from '../../../src/components/ui';
 import { useMeal, useUpdateMeal } from '../../../src/api/meals';
+import { safeBack } from '../../../src/lib/safeBack';
 
 export default function MealEdit() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,13 +27,13 @@ export default function MealEdit() {
       carbsG: parseFloat(carbs) || 0,
       fatG: parseFloat(fat) || 0,
     });
-    router.back();
+    safeBack(`/meal/${id}` as any);
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top', 'bottom']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
-        <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Cancel" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Cancel" variant="ghost" onPress={() => safeBack(`/meal/${id}` as any)} />
         <Text style={{ color: '#F1F5F9', fontSize: 16, fontWeight: '700' }}>Edit macros</Text>
         <Pressable onPress={save}>
           <Text style={{ color: '#14B8A6', fontSize: 14, fontWeight: '700' }}>Save</Text>

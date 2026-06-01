@@ -5,6 +5,7 @@ import { ArrowLeft, ChevronRight, Plus } from 'lucide-react-native';
 import { Card, EmptyState, IconButton, LoadingShimmer } from '../../../../src/components/ui';
 import { useWeeks } from '../../../../src/api/weeks';
 import { useRefresh } from '../../../../src/lib/useRefresh';
+import { safeBack } from '../../../../src/lib/safeBack';
 
 const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
@@ -15,7 +16,7 @@ export default function WeeksList() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/train')} />
           <Text style={{ color: '#F1F5F9', fontSize: 22, fontWeight: '700' }}>Weeks</Text>
         </View>
         <IconButton icon={<Plus color="#042F2A" size={20} />} accessibilityLabel="New" variant="accent-teal" onPress={() => router.push('/(tabs)/train/weeks/new')} />

@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { ArrowLeft, Dumbbell, Eye, EyeOff } from 'lucide-react-native';
 import { Button, ErrorBanner, IconButton, Input } from '../../src/components/ui';
 import { useSignIn } from '../../src/api/auth';
+import { safeBack } from '../../src/lib/safeBack';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -28,7 +29,7 @@ export default function Login() {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
           <View style={{ paddingHorizontal: 20, paddingTop: 8 }}>
-            <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" onPress={() => router.back()} variant="ghost" />
+            <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" onPress={() => safeBack('/(auth)/welcome')} variant="ghost" />
           </View>
           <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24 }}>
             <View style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: '#14B8A6', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>

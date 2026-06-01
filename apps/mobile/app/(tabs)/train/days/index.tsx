@@ -7,6 +7,7 @@ import { ArrowLeft, ChevronRight, Plus } from 'lucide-react-native';
 import { Card, Chip, EmptyState, IconButton, LoadingShimmer } from '../../../../src/components/ui';
 import { useDays } from '../../../../src/api/days';
 import { useRefresh } from '../../../../src/lib/useRefresh';
+import { safeBack } from '../../../../src/lib/safeBack';
 
 export default function DaysList() {
   const days = useDays();
@@ -15,7 +16,7 @@ export default function DaysList() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/train')} />
           <Text style={{ color: '#F1F5F9', fontSize: 22, fontWeight: '700' }}>Days</Text>
         </View>
         <IconButton icon={<Plus color="#042F2A" size={20} />} accessibilityLabel="New day" variant="accent-teal" onPress={() => router.push('/(tabs)/train/days/new')} />

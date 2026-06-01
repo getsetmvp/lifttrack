@@ -6,6 +6,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, Dumbbell, MoreVertical, Pencil, Plus, Zap } from 'lucide-react-native';
 import { Button, Card, IconButton, LoadingShimmer } from '../../../../src/components/ui';
 import { useDay } from '../../../../src/api/days';
+import { safeBack } from '../../../../src/lib/safeBack';
 
 export default function DayDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -18,7 +19,7 @@ export default function DayDetail() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
-          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/train')} />
           <Text style={{ color: '#F1F5F9', fontSize: 18, fontWeight: '700', flex: 1 }} numberOfLines={1}>
             {day.data?.name ?? '—'}
           </Text>

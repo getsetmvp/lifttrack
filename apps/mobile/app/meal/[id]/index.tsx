@@ -7,6 +7,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, MoreVertical, Pencil, Plus, Sparkles } from 'lucide-react-native';
 import { Button, Card, IconButton, LoadingShimmer, EmptyState } from '../../../src/components/ui';
 import { useMeal, useUpdateMeal, useDeleteMealItem } from '../../../src/api/meals';
+import { safeBack } from '../../../src/lib/safeBack';
 
 export default function MealDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,7 +27,7 @@ export default function MealDetail() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top', 'bottom']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
-          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/fuel')} />
           <View style={{ flex: 1 }}>
             <Text style={{ color: '#F1F5F9', fontSize: 16, fontWeight: '700' }}>{m?.slot ?? '—'}</Text>
             <Text style={{ color: '#94A3B8', fontFamily: 'JetBrainsMono_500Medium', fontSize: 10 }}>
@@ -117,7 +118,7 @@ export default function MealDetail() {
         </View>
       </ScrollView>
       <View style={{ padding: 20, paddingBottom: 24 }}>
-        <Button label="Confirm" variant="primary-orange" fullWidth onPress={() => router.back()} />
+        <Button label="Confirm" variant="primary-orange" fullWidth onPress={() => safeBack('/(tabs)/fuel')} />
       </View>
     </SafeAreaView>
   );

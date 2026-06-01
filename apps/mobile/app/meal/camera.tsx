@@ -12,6 +12,7 @@ import type { MealSlot } from '@liftfuel/shared-types';
 import { Button, IconButton } from '../../src/components/ui';
 import { useCreateMeal } from '../../src/api/meals';
 import { useParseMeal } from '../../src/api/ai';
+import { safeBack } from '../../src/lib/safeBack';
 
 type Phase = 'CAPTURE' | 'PREVIEW' | 'ANALYZING';
 
@@ -46,7 +47,7 @@ export default function MealCamera() {
       setPhase('CAPTURE');
       return;
     }
-    router.back();
+    safeBack('/(tabs)/fuel');
   }, [phase]);
 
   useFocusEffect(

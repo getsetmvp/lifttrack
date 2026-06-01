@@ -8,6 +8,7 @@ import { X } from 'lucide-react-native';
 import { Button, Card, IconButton, Input, SegmentedControl } from '../../../../src/components/ui';
 import { useCreateRoutine } from '../../../../src/api/routines';
 import { useWeeks } from '../../../../src/api/weeks';
+import { safeBack } from '../../../../src/lib/safeBack';
 
 export default function RoutineNew() {
   const [name, setName] = useState('');
@@ -38,7 +39,7 @@ export default function RoutineNew() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
-        <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Cancel" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Cancel" variant="ghost" onPress={() => safeBack('/(tabs)/train')} />
         <Text style={{ color: '#F1F5F9', fontSize: 17, fontWeight: '700' }}>New routine</Text>
         <Pressable onPress={save} disabled={!name.trim() || selectedWeekIds.length === 0 || create.isPending}>
           <Text style={{ color: !name.trim() || selectedWeekIds.length === 0 ? '#64748B' : '#14B8A6', fontSize: 14, fontWeight: '700' }}>Save</Text>

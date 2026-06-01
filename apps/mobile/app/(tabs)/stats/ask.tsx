@@ -7,6 +7,7 @@ import { router } from 'expo-router';
 import { RotateCcw, Send, Sparkles, X } from 'lucide-react-native';
 import { Card, IconButton } from '../../../src/components/ui';
 import { useAsk } from '../../../src/api/ai';
+import { safeBack } from '../../../src/lib/safeBack';
 
 interface Msg { role: 'user' | 'ai'; text: string }
 
@@ -31,7 +32,7 @@ export default function AskChat() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
-        <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Close" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Close" variant="ghost" onPress={() => safeBack('/(tabs)/stats')} />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <Sparkles color="#14B8A6" size={16} />
           <Text style={{ color: '#F1F5F9', fontSize: 17, fontWeight: '700' }}>Ask LiftFuel</Text>

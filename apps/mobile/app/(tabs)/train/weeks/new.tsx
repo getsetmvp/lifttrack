@@ -6,6 +6,7 @@ import { X } from 'lucide-react-native';
 import { Button, Card, IconButton, Input } from '../../../../src/components/ui';
 import { useCreateWeek } from '../../../../src/api/weeks';
 import { useDays } from '../../../../src/api/days';
+import { safeBack } from '../../../../src/lib/safeBack';
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -29,7 +30,7 @@ export default function WeekNew() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
-        <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Cancel" variant="ghost" onPress={() => router.back()} />
+        <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Cancel" variant="ghost" onPress={() => safeBack('/(tabs)/train')} />
         <Text style={{ color: '#F1F5F9', fontSize: 17, fontWeight: '700' }}>New week</Text>
         <Pressable onPress={save} disabled={!name.trim() || create.isPending}>
           <Text style={{ color: !name.trim() ? '#64748B' : '#14B8A6', fontSize: 14, fontWeight: '700' }}>Save</Text>

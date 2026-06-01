@@ -8,6 +8,7 @@ import { Card, EmptyState, IconButton, LoadingShimmer } from '../../../src/compo
 import { useWorkouts } from '../../../src/api/workouts';
 import { formatRelativeDay } from '../../../src/lib/format';
 import { useRefresh } from '../../../src/lib/useRefresh';
+import { safeBack } from '../../../src/lib/safeBack';
 
 const MOOD_EMOJI = ['😞', '😐', '🙂', '😄', '🔥'];
 
@@ -18,7 +19,7 @@ export default function History() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/train')} />
           <Text style={{ color: '#F1F5F9', fontSize: 22, fontWeight: '700' }}>History</Text>
         </View>
         <IconButton icon={<Filter color="#F1F5F9" size={20} />} accessibilityLabel="Filter" />

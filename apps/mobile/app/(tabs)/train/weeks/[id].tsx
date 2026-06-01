@@ -6,6 +6,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, ChevronRight, MoreVertical } from 'lucide-react-native';
 import { Card, IconButton, LoadingShimmer } from '../../../../src/components/ui';
 import { useWeek } from '../../../../src/api/weeks';
+import { safeBack } from '../../../../src/lib/safeBack';
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -17,7 +18,7 @@ export default function WeekDetail() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
-          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/train')} />
           <Text style={{ color: '#F1F5F9', fontSize: 17, fontWeight: '700', flex: 1 }} numberOfLines={1}>{w.data?.name ?? '—'}</Text>
         </View>
         <IconButton icon={<MoreVertical color="#F1F5F9" size={16} />} accessibilityLabel="More" variant="ghost" size={36} />

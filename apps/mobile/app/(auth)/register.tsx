@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { ArrowLeft, Check } from 'lucide-react-native';
 import { Button, ErrorBanner, IconButton, Input } from '../../src/components/ui';
 import { useSignUp } from '../../src/api/auth';
+import { safeBack } from '../../src/lib/safeBack';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -31,7 +32,7 @@ export default function Register() {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
           <View style={{ paddingHorizontal: 20, paddingTop: 8 }}>
-            <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" onPress={() => router.back()} variant="ghost" />
+            <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" onPress={() => safeBack('/(auth)/welcome')} variant="ghost" />
           </View>
           <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 24 }}>
             <Text style={{ color: '#F1F5F9', fontSize: 30, fontWeight: '700', letterSpacing: -0.5 }}>Create account</Text>

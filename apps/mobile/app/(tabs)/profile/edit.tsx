@@ -9,6 +9,7 @@ import { ArrowLeft, Check, Minus, TrendingDown, TrendingUp, Zap } from 'lucide-r
 import { Button, Card, IconButton, Input, SegmentedControl } from '../../../src/components/ui';
 import { useMe } from '../../../src/api/auth';
 import { useUpdateUser } from '../../../src/api/users';
+import { safeBack } from '../../../src/lib/safeBack';
 
 type Goal = 'MUSCLE' | 'FAT' | 'MAINTAIN' | 'STRENGTH';
 
@@ -75,7 +76,7 @@ export default function ProfileEdit() {
     }
     try {
       await update.mutateAsync(dto);
-      router.back();
+      safeBack('/(tabs)/profile');
     } catch (e: any) {
       Alert.alert('Save failed', e?.message ?? 'Unknown error');
     }
@@ -85,7 +86,7 @@ export default function ProfileEdit() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => router.back()} />
+          <IconButton icon={<ArrowLeft color="#F1F5F9" size={20} />} accessibilityLabel="Back" variant="ghost" onPress={() => safeBack('/(tabs)/profile')} />
           <Text style={{ color: '#F1F5F9', fontSize: 20, fontWeight: '700' }}>Edit profile</Text>
         </View>
         <Pressable onPress={save} hitSlop={8} disabled={update.isPending}>
