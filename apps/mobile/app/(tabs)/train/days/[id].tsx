@@ -63,7 +63,13 @@ export default function DayDetail() {
             </Card>
           </View>
         ) : null}
-        <Button label="Add exercise" variant="secondary" fullWidth leadingIcon={<Plus color="#F1F5F9" size={16} />} />
+        <Button
+          label="Add exercise"
+          variant="secondary"
+          fullWidth
+          leadingIcon={<Plus color="#F1F5F9" size={16} />}
+          onPress={() => router.push(`/exercise-picker?dayId=${id}` as any)}
+        />
         {day.data?.notes ? (
           <View>
             <Text style={{ color: '#94A3B8', fontSize: 11, fontWeight: '700', letterSpacing: 0.08, textTransform: 'uppercase', marginBottom: 8 }}>Notes</Text>

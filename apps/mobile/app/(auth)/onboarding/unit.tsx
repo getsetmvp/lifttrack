@@ -1,6 +1,7 @@
 // Onboarding step 1 — design.md § 8.18.
 
-import { Pressable, SafeAreaView, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { CheckCircle2 } from 'lucide-react-native';
 import { Button } from '../../../src/components/ui';

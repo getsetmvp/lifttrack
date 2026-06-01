@@ -1,7 +1,8 @@
 // Onboarding step 3 — design.md § 8.18.
 
 import { useState } from 'react';
-import { Pressable, SafeAreaView, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ArrowLeft, Info } from 'lucide-react-native';
 import { Button, IconButton, Input } from '../../../src/components/ui';

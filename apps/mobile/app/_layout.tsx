@@ -79,6 +79,7 @@ export default function RootLayout() {
             <Stack.Screen name="workout" options={{ presentation: 'modal' }} />
             <Stack.Screen name="meal" options={{ presentation: 'modal' }} />
             <Stack.Screen name="exercise/[id]" />
+            <Stack.Screen name="exercise-picker" options={{ presentation: 'modal' }} />
           </Stack>
           <StatusBar style="light" translucent={false} backgroundColor="#0F1115" />
         </QueryClientProvider>
