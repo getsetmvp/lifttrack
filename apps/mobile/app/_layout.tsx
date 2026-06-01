@@ -108,7 +108,8 @@ export default function RootLayout() {
             screenOptions={{
               headerShown: false,
               contentStyle: { backgroundColor: '#0F1115' },
-              animation: 'none',
+              animation: 'fade',
+              animationDuration: 120,
               freezeOnBlur: false,
               navigationBarColor: '#0F1115',
               statusBarBackgroundColor: '#0F1115',
