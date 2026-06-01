@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 import { Camera, Image as ImageIcon, RefreshCw, X, Zap, ZapOff } from 'lucide-react-native';
 import type { MealSlot } from '@liftfuel/shared-types';
 import { Button, IconButton } from '../../src/components/ui';
@@ -37,15 +38,32 @@ export default function MealCamera() {
 
   const today = new Date().toISOString().slice(0, 10);
 
+  // Resize + recompress before upload so /ai/parse-meal payload stays small.
+  // 1024px max edge + JPEG 0.55 keeps photos ~120-220 KB base64 — well within
+  // server body-parser limits and AI gateway image-tokens budget.
+  const shrink = async (uri: string): Promise<{ uri: string; base64: string }> => {
+    const out = await ImageManipulator.manipulateAsync(
+      uri,
+      [{ resize: { width: 1024 } }],
+      { compress: 0.55, format: ImageManipulator.SaveFormat.JPEG, base64: true },
+    );
+    return { uri: out.uri, base64: out.base64 ?? '' };
+  };
+
   const onCapture = async () => {
     if (!camRef.current) return;
     try {
-      const pic = await camRef.current.takePictureAsync({ base64: true, quality: 0.6, exif: false });
-      if (!pic?.base64) {
+      const pic = await camRef.current.takePictureAsync({ quality: 0.7, exif: false });
+      if (!pic?.uri) {
         Alert.alert('Capture failed', 'No image data returned.');
         return;
       }
-      setPreview({ uri: pic.uri, base64: pic.base64 });
+      const small = await shrink(pic.uri);
+      if (!small.base64) {
+        Alert.alert('Capture failed', 'Could not encode photo.');
+        return;
+      }
+      setPreview(small);
       setPhase('PREVIEW');
     } catch (e: any) {
       Alert.alert('Capture failed', e?.message ?? 'Unknown error');
@@ -56,12 +74,16 @@ export default function MealCamera() {
     try {
       const res = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        base64: true,
-        quality: 0.6,
+        quality: 0.9,
         allowsEditing: false,
       });
-      if (res.canceled || !res.assets?.[0]?.base64) return;
-      setPreview({ uri: res.assets[0].uri, base64: res.assets[0].base64 });
+      if (res.canceled || !res.assets?.[0]?.uri) return;
+      const small = await shrink(res.assets[0].uri);
+      if (!small.base64) {
+        Alert.alert('Gallery error', 'Could not encode photo.');
+        return;
+      }
+      setPreview(small);
       setPhase('PREVIEW');
     } catch (e: any) {
       Alert.alert('Gallery error', e?.message ?? 'Unknown error');
