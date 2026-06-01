@@ -1,6 +1,6 @@
 // Profile — design.md § 8.17.
 
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
@@ -10,12 +10,14 @@ import { useMe, useSignOut } from '../../../src/api/auth';
 import { useBodyMetrics } from '../../../src/api/users';
 import { formatWeight } from '../../../src/lib/format';
 import { useUnitStore } from '../../../src/store/useUnitStore';
+import { useRefresh } from '../../../src/lib/useRefresh';
 
 export default function Profile() {
   const me = useMe();
   const signOut = useSignOut();
   const bms = useBodyMetrics();
   const { unit } = useUnitStore();
+  const { refreshing, onRefresh } = useRefresh(me, bms);
 
   const u = me.data;
   const latestWeight = (bms.data ?? []).find((b) => b.weightKg != null)?.weightKg ?? null;
@@ -28,7 +30,10 @@ export default function Profile() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 100, gap: 16 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 100, gap: 16 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#14B8A6" colors={['#14B8A6']} />}
+      >
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text style={{ color: '#F1F5F9', fontSize: 24, fontWeight: '700' }}>Profile</Text>
           <IconButton icon={<Settings color="#F1F5F9" size={20} />} accessibilityLabel="Settings" onPress={() => router.push('/(tabs)/profile/settings')} />

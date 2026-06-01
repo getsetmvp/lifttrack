@@ -1,17 +1,19 @@
 // Body metrics — design.md § 8 screen 39.
 
 import { useState } from 'react';
-import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Modal, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ArrowLeft, Plus, X } from 'lucide-react-native';
 import { Button, Card, IconButton, Input, LoadingShimmer } from '../../../src/components/ui';
 import { useAddBodyMetric, useBodyMetrics } from '../../../src/api/users';
 import { formatRelativeDay } from '../../../src/lib/format';
+import { useRefresh } from '../../../src/lib/useRefresh';
 
 export default function BodyMetrics() {
   const bm = useBodyMetrics();
   const add = useAddBodyMetric();
+  const { refreshing, onRefresh } = useRefresh(bm);
   const [open, setOpen] = useState(false);
   const [weight, setWeight] = useState('');
   const [bf, setBf] = useState('');
@@ -46,7 +48,10 @@ export default function BodyMetrics() {
         <IconButton icon={<Plus color="#042F2A" size={20} />} accessibilityLabel="Add" variant="accent-teal" onPress={() => setOpen(true)} />
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 80, gap: 12 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 80, gap: 12 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#14B8A6" colors={['#14B8A6']} />}
+      >
         <Card>
           {bm.isLoading ? (
             <LoadingShimmer height={80} />

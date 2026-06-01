@@ -1,6 +1,6 @@
 // Train landing — design.md § 8.2.
 
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { CalendarDays, ChevronRight, Folder, History, Layers, Play, Search } from 'lucide-react-native';
@@ -9,6 +9,7 @@ import { useActiveRoutine, useRoutines } from '../../../src/api/routines';
 import { useDays } from '../../../src/api/days';
 import { useWeeks } from '../../../src/api/weeks';
 import { useStartWorkout } from '../../../src/api/workouts';
+import { useRefresh } from '../../../src/lib/useRefresh';
 
 export default function TrainLanding() {
   const active = useActiveRoutine();
@@ -16,10 +17,14 @@ export default function TrainLanding() {
   const weeks = useWeeks();
   const routines = useRoutines();
   const start = useStartWorkout();
+  const { refreshing, onRefresh } = useRefresh(active, days, weeks, routines);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 100, gap: 16 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 100, gap: 16 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#14B8A6" colors={['#14B8A6']} />}
+      >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <Text style={{ color: '#F1F5F9', fontSize: 24, fontWeight: '700' }}>Train</Text>
           <IconButton icon={<History color="#F1F5F9" size={20} />} accessibilityLabel="History" onPress={() => router.push('/(tabs)/train/history')} />

@@ -1,6 +1,6 @@
 // Today — design.md § 8.1. Live data from /auth/me + active routine + today's meals + summary.
 
-import { ScrollView, Text, View, Pressable } from 'react-native';
+import { RefreshControl, ScrollView, Text, View, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Svg, { Circle } from 'react-native-svg';
@@ -21,6 +21,7 @@ import { useMealsForDate } from '../../src/api/meals';
 import { useAnalyticsSummary } from '../../src/api/analytics';
 import { useWorkouts, useStartWorkout } from '../../src/api/workouts';
 import { formatRelativeDay, formatVolume } from '../../src/lib/format';
+import { useRefresh } from '../../src/lib/useRefresh';
 
 const TODAY = new Date().toISOString().slice(0, 10);
 
@@ -36,6 +37,7 @@ export default function Today() {
   const summary = useAnalyticsSummary('7d');
   const recent = useWorkouts();
   const start = useStartWorkout();
+  const { refreshing, onRefresh } = useRefresh(me, activeRoutine, todayRes, meals, summary, recent);
 
   const greeting = (() => {
     const h = new Date().getHours();
@@ -67,7 +69,10 @@ export default function Today() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 100, gap: 12 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 100, gap: 12 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#14B8A6" colors={['#14B8A6']} />}
+      >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ flex: 1 }}>
             <Text style={{ color: '#94A3B8', fontSize: 12 }}>{greeting}</Text>

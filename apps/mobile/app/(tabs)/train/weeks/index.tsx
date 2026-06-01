@@ -1,14 +1,16 @@
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ArrowLeft, ChevronRight, Plus } from 'lucide-react-native';
 import { Card, EmptyState, IconButton, LoadingShimmer } from '../../../../src/components/ui';
 import { useWeeks } from '../../../../src/api/weeks';
+import { useRefresh } from '../../../../src/lib/useRefresh';
 
 const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
 export default function WeeksList() {
   const weeks = useWeeks();
+  const { refreshing, onRefresh } = useRefresh(weeks);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
@@ -18,7 +20,10 @@ export default function WeeksList() {
         </View>
         <IconButton icon={<Plus color="#042F2A" size={20} />} accessibilityLabel="New" variant="accent-teal" onPress={() => router.push('/(tabs)/train/weeks/new')} />
       </View>
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 10, paddingBottom: 80 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, gap: 10, paddingBottom: 80 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#14B8A6" colors={['#14B8A6']} />}
+      >
         {weeks.isLoading ? <Card><LoadingShimmer height={80} /></Card> : (weeks.data ?? []).length === 0 ? (
           <Card><EmptyState title="No weeks" subtitle="A Week composes 7 Days. Used in Routines." /></Card>
         ) : (weeks.data ?? []).map((w) => (

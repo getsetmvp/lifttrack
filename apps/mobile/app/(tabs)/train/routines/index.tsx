@@ -1,15 +1,17 @@
 // Routines list — design.md § 8 screen 10.
 
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ArrowLeft, ChevronRight, Plus } from 'lucide-react-native';
 import { Card, Chip, EmptyState, IconButton, LoadingShimmer } from '../../../../src/components/ui';
 import { useRoutines } from '../../../../src/api/routines';
 import { formatRelativeDay } from '../../../../src/lib/format';
+import { useRefresh } from '../../../../src/lib/useRefresh';
 
 export default function RoutinesList() {
   const routines = useRoutines();
+  const { refreshing, onRefresh } = useRefresh(routines);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
@@ -19,7 +21,10 @@ export default function RoutinesList() {
         </View>
         <IconButton icon={<Plus color="#042F2A" size={20} />} accessibilityLabel="New" variant="accent-teal" onPress={() => router.push('/(tabs)/train/routines/new')} />
       </View>
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 10, paddingBottom: 80 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, gap: 10, paddingBottom: 80 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#14B8A6" colors={['#14B8A6']} />}
+      >
         {routines.isLoading ? <Card><LoadingShimmer height={60} /></Card> : (routines.data ?? []).length === 0 ? (
           <Card><EmptyState title="No routines" subtitle="Create your first routine to start training." /></Card>
         ) : (routines.data ?? []).map((r) => (

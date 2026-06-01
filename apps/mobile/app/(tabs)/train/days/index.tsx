@@ -1,14 +1,16 @@
 // Days list — design.md § 8.16. Compact functional version.
 
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ArrowLeft, ChevronRight, Plus } from 'lucide-react-native';
 import { Card, Chip, EmptyState, IconButton, LoadingShimmer } from '../../../../src/components/ui';
 import { useDays } from '../../../../src/api/days';
+import { useRefresh } from '../../../../src/lib/useRefresh';
 
 export default function DaysList() {
   const days = useDays();
+  const { refreshing, onRefresh } = useRefresh(days);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 }}>
@@ -18,7 +20,10 @@ export default function DaysList() {
         </View>
         <IconButton icon={<Plus color="#042F2A" size={20} />} accessibilityLabel="New day" variant="accent-teal" onPress={() => router.push('/(tabs)/train/days/new')} />
       </View>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 80, gap: 10 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 80, gap: 10 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#14B8A6" colors={['#14B8A6']} />}
+      >
         {days.isLoading ? (
           <Card><LoadingShimmer height={60} /></Card>
         ) : (days.data ?? []).length === 0 ? (

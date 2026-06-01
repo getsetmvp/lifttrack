@@ -1,19 +1,21 @@
 // Stats landing — design.md § 8.14.
 
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ChevronRight, Sparkles } from 'lucide-react-native';
 import { Button, Card, LoadingShimmer, ProgressBar, RangePill } from '../../../src/components/ui';
 import type { RangeValue } from '../../../src/components/ui';
 import { useAnalyticsSummary, useNutritionAnalytics, useStrengthAll } from '../../../src/api/analytics';
+import { useRefresh } from '../../../src/lib/useRefresh';
 
 export default function StatsLanding() {
   const [range, setRange] = useState<RangeValue>('30d');
   const summary = useAnalyticsSummary(range as any);
   const strengthAll = useStrengthAll(range as any);
   const nutrition = useNutritionAnalytics(range as any);
+  const { refreshing, onRefresh } = useRefresh(summary, strengthAll, nutrition);
 
   const nutAvgAdherence = (nutrition.data ?? []).length
     ? Math.round(((nutrition.data ?? []).reduce((a, p) => a + (p.adherencePct ?? 0), 0) / (nutrition.data ?? []).length))
@@ -27,7 +29,10 @@ export default function StatsLanding() {
       <View style={{ paddingHorizontal: 20, marginBottom: 12 }}>
         <RangePill value={range} onChange={setRange} />
       </View>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 120, gap: 16 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 120, gap: 16 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#14B8A6" colors={['#14B8A6']} />}
+      >
         <Pressable onPress={() => router.push('/(tabs)/stats/strength' as any)}>
           <View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
