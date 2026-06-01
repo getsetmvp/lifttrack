@@ -1,13 +1,14 @@
-// Welcome screen placeholder — Phase 5.2 Agent B replaces (design.md § 8.18 mockup 02).
+// Welcome screen — design.md § 8 mockup 02.
 
-import { SafeAreaView, Text, View } from 'react-native';
-import { Link } from 'expo-router';
+import { Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { Button } from '../../src/components/ui';
 import { Dumbbell } from 'lucide-react-native';
 
 export default function Welcome() {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#0F1115' }} edges={['top', 'bottom']}>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32, gap: 16 }}>
         <View
           style={{
@@ -29,12 +30,8 @@ export default function Welcome() {
         </Text>
       </View>
       <View style={{ paddingHorizontal: 24, paddingBottom: 32, gap: 8 }}>
-        <Link href="/(auth)/register" asChild>
-          <Button label="Create account" variant="primary-teal" fullWidth />
-        </Link>
-        <Link href="/(auth)/login" asChild>
-          <Button label="I already have an account" variant="ghost" fullWidth />
-        </Link>
+        <Button label="Create account" variant="primary-teal" fullWidth onPress={() => router.push('/(auth)/register')} />
+        <Button label="I already have an account" variant="ghost" fullWidth onPress={() => router.push('/(auth)/login')} />
       </View>
     </SafeAreaView>
   );

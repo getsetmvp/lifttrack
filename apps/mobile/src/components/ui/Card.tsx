@@ -49,7 +49,7 @@ export function Card({ children, padding = 16, accent, onPress, testID, style }:
       <Pressable
         testID={testID}
         onPress={onPress}
-        style={({ pressed }) => [wrapStyle, { opacity: pressed ? 0.85 : 1 }]}
+        style={wrapStyle}
       >
         {inner}
       </Pressable>

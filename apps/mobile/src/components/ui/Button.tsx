@@ -1,9 +1,8 @@
 // Button atom — variants per design.md § 10.
-// Soft-Dark Modern: 1px border + 1px top highlight for depth (no big shadows).
 
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { useState, type ReactNode } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { haptic } from '../../lib/haptics';
-import type { ReactNode } from 'react';
 
 export type ButtonVariant = 'primary-teal' | 'primary-orange' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -23,6 +22,14 @@ interface Props {
 
 const heightBySize: Record<ButtonSize, number> = { sm: 36, md: 44, lg: 48 };
 
+const variantStyles = {
+  'primary-teal': { bg: '#14B8A6', fg: '#042F2A', border: 'transparent' },
+  'primary-orange': { bg: '#F97316', fg: '#3D1A04', border: 'transparent' },
+  secondary: { bg: '#21252E', fg: '#F1F5F9', border: '#2A2F3A' },
+  ghost: { bg: 'transparent', fg: '#F1F5F9', border: '#2A2F3A' },
+  danger: { bg: 'rgba(239,68,68,0.12)', fg: '#EF4444', border: 'rgba(239,68,68,0.30)' },
+} as const;
+
 export function Button({
   label,
   onPress,
@@ -36,67 +43,64 @@ export function Button({
   testID,
 }: Props) {
   const isDisabled = disabled || loading;
-
-  const bg =
-    variant === 'primary-teal' ? '#14B8A6' :
-    variant === 'primary-orange' ? '#F97316' :
-    variant === 'danger' ? 'rgba(239,68,68,0.12)' :
-    variant === 'ghost' ? 'transparent' :
-    '#21252E';
-
-  const textColor =
-    variant === 'primary-teal' ? '#042F2A' :
-    variant === 'primary-orange' ? '#3D1A04' :
-    variant === 'danger' ? '#EF4444' :
-    '#F1F5F9';
-
-  const borderColor =
-    variant === 'secondary' || variant === 'ghost' ? '#2A2F3A' :
-    variant === 'danger' ? 'rgba(239,68,68,0.30)' :
-    'transparent';
+  const v = variantStyles[variant];
+  const [pressed, setPressed] = useState(false);
 
   return (
     <Pressable
       testID={testID}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
       onPress={() => {
         if (isDisabled) return;
         haptic.selection();
         onPress?.();
       }}
       disabled={isDisabled}
-      style={({ pressed }) => ({
-        height: heightBySize[size],
-        paddingHorizontal: size === 'sm' ? 12 : 16,
-        borderRadius: 12,
-        backgroundColor: bg,
-        borderWidth: borderColor === 'transparent' ? 0 : 1,
-        borderColor,
-        opacity: isDisabled ? 0.5 : pressed ? 0.85 : 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 8,
-        ...(fullWidth ? { width: '100%' as const } : {}),
-      })}
     >
-      {loading ? (
-        <ActivityIndicator color={textColor} size="small" />
-      ) : (
-        <>
-          {leadingIcon}
-          <Text
-            style={{
-              color: textColor,
-              fontWeight: '700',
-              fontSize: size === 'sm' ? 13 : 15,
-              letterSpacing: -0.1,
-            }}
-          >
-            {label}
-          </Text>
-          {trailingIcon}
-        </>
-      )}
+      <View
+        style={{
+          height: heightBySize[size],
+          paddingHorizontal: size === 'sm' ? 12 : 16,
+          backgroundColor: v.bg,
+          borderColor: v.border,
+          borderWidth: v.border === 'transparent' ? 0 : 1,
+          borderRadius: 12,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          opacity: isDisabled ? 0.5 : pressed ? 0.85 : 1,
+          alignSelf: fullWidth ? 'stretch' : undefined,
+        }}
+      >
+        {loading ? (
+          <ActivityIndicator color={v.fg} size="small" />
+        ) : (
+          <View style={styles.row}>
+            {leadingIcon}
+            <Text
+              style={{
+                color: v.fg,
+                fontWeight: '700',
+                fontSize: size === 'sm' ? 13 : 15,
+                letterSpacing: -0.1,
+              }}
+            >
+              {label}
+            </Text>
+            {trailingIcon}
+          </View>
+        )}
+      </View>
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+});
