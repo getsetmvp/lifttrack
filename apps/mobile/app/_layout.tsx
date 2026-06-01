@@ -13,6 +13,7 @@ enableScreens(false);
 
 import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
+import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -89,12 +90,29 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#0F1115' }}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
+          {/* Absolute dark backdrop sits behind the Stack at all times so any
+              transient empty surface (screen mount, status bar re-paint, native
+              container clear) reveals dark, not the OS window default. */}
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: '#0F1115',
+            }}
+            pointerEvents="none"
+          />
           <Stack
             screenOptions={{
               headerShown: false,
               contentStyle: { backgroundColor: '#0F1115' },
               animation: 'none',
               freezeOnBlur: false,
+              navigationBarColor: '#0F1115',
+              statusBarBackgroundColor: '#0F1115',
+              statusBarStyle: 'light',
             }}
           >
             <Stack.Screen name="index" />
