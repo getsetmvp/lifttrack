@@ -159,7 +159,7 @@ export default function MealCamera() {
           </View>
           <Text style={{ color: '#F1F5F9', fontSize: 18, fontWeight: '700', textAlign: 'center' }}>Camera permission needed</Text>
           <Text style={{ color: '#94A3B8', fontSize: 13, textAlign: 'center', lineHeight: 20 }}>
-            LiftFuel needs camera access to analyze meal photos. You can also pick an existing photo from your library.
+            LiftTrack needs camera access to analyze meal photos. You can also pick an existing photo from your library.
           </Text>
           <Button label="Grant camera access" variant="primary-teal" fullWidth onPress={() => requestPerm()} />
           <Button label="Pick from gallery instead" variant="secondary" fullWidth onPress={onPickFromGallery} />

@@ -121,7 +121,7 @@ export default function StatsLanding() {
         </Pressable>
 
         <Button
-          label="Ask LiftFuel"
+          label="Ask LiftTrack"
           variant="primary-teal"
           fullWidth
           leadingIcon={<Sparkles color="#042F2A" size={16} />}

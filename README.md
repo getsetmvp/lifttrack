@@ -147,7 +147,7 @@ liftfuel/
 │   │   ├── certs/certificate.pem (PUBLIC, safe to commit)
 │   │   ├── app.config.js        dynamic Expo config
 │   │   ├── eas.json             3 EAS profiles
-│   │   ├── tailwind.config.ts   LiftFuel palette per design.md
+│   │   ├── tailwind.config.ts   LiftTrack palette per design.md
 │   │   └── package.json
 │   └── web/                     (deferred; planned for v1.1)
 ├── packages/

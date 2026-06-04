@@ -98,7 +98,7 @@ export default function Profile() {
 
         <Card>
           <Pressable onPress={() => router.push('/(tabs)/profile/about')}>
-            <Text style={{ color: '#94A3B8', fontSize: 13, textAlign: 'center' }}>About LiftFuel</Text>
+            <Text style={{ color: '#94A3B8', fontSize: 13, textAlign: 'center' }}>About LiftTrack</Text>
           </Pressable>
         </Card>
 

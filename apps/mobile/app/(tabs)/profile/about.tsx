@@ -24,7 +24,7 @@ export default function About() {
             <View style={{ width: 64, height: 64, borderRadius: 18, backgroundColor: '#14B8A6', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
               <Dumbbell color="#042F2A" size={32} />
             </View>
-            <Text style={{ color: '#F1F5F9', fontSize: 24, fontWeight: '700', letterSpacing: -0.3 }}>LiftFuel</Text>
+            <Text style={{ color: '#F1F5F9', fontSize: 24, fontWeight: '700', letterSpacing: -0.3 }}>LiftTrack</Text>
             <Text style={{ color: '#94A3B8', fontSize: 13, marginTop: 4 }}>Train smart. Eat smarter.</Text>
             <Text style={{ color: '#64748B', fontFamily: 'JetBrainsMono_500Medium', fontSize: 10, marginTop: 8 }}>
               v{ver} · {env}

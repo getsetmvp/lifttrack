@@ -9,12 +9,12 @@ module.exports = ({ config }) => {
 
   return {
     ...config,
-    name: isPreview ? 'LiftFuel (Preview)' : 'LiftFuel',
-    slug: isPreview ? 'liftfuel-preview' : 'liftfuel',
+    name: isPreview ? 'LiftTrack (Preview)' : 'LiftTrack',
+    slug: isPreview ? 'lifttrack-preview' : 'lifttrack',
     version: '1.0.0',
     runtimeVersion: '1.0.0',
     orientation: 'portrait',
-    scheme: 'liftfuel',
+    scheme: 'lifttrack',
     userInterfaceStyle: 'dark',
     newArchEnabled: true,
     icon: './assets/images/icon.png',
@@ -36,13 +36,13 @@ module.exports = ({ config }) => {
     ios: {
       supportsTablet: false,
       bundleIdentifier: isPreview
-        ? 'com.yashguptadeveloper.liftfuel.preview'
-        : 'com.yashguptadeveloper.liftfuel',
+        ? 'com.getsetmvp.lifttrack.preview'
+        : 'com.getsetmvp.lifttrack',
     },
     android: {
       package: isPreview
-        ? 'com.yashguptadeveloper.liftfuel.preview'
-        : 'com.yashguptadeveloper.liftfuel',
+        ? 'com.getsetmvp.lifttrack.preview'
+        : 'com.getsetmvp.lifttrack',
       adaptiveIcon: {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#0F1115',
@@ -63,13 +63,13 @@ module.exports = ({ config }) => {
       [
         'expo-camera',
         {
-          cameraPermission: 'Allow LiftFuel to use the camera to capture meal photos for macro analysis.',
+          cameraPermission: 'Allow LiftTrack to use the camera to capture meal photos for macro analysis.',
         },
       ],
       [
         'expo-image-picker',
         {
-          photosPermission: 'Allow LiftFuel to read photos from your library to import meals.',
+          photosPermission: 'Allow LiftTrack to read photos from your library to import meals.',
         },
       ],
       [
@@ -88,15 +88,18 @@ module.exports = ({ config }) => {
           backgroundColor: '#0F1115',
         },
       ],
+      './plugins/with-remove-system-alert-window',
     ],
     experiments: {
       typedRoutes: false,
     },
     extra: {
+      ...(config?.extra ?? {}),
       env,
       apiUrl: process.env.EXPO_PUBLIC_API_URL || 'https://server.getsetmvp.com',
       tenant: 'liftfuel',
       sentryDsn: process.env.EXPO_PUBLIC_SENTRY_DSN || '',
     },
+    owner: 'yashguptadeveloper',
   };
 };

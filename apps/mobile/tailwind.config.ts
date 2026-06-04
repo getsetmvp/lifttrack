@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss';
 
-// LiftFuel palette — locked in design.md § 2 (Soft-Dark Modern, teal + orange).
+// LiftTrack palette — locked in design.md § 2 (Soft-Dark Modern, teal + orange).
 const config: Config = {
   content: ['./app/**/*.{tsx,ts,jsx,js}', './src/**/*.{tsx,ts,jsx,js}'],
   presets: [require('nativewind/preset')],

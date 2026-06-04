@@ -35,7 +35,7 @@ export default function AskChat() {
         <IconButton icon={<X color="#F1F5F9" size={20} />} accessibilityLabel="Close" variant="ghost" onPress={() => safeBack('/(tabs)/stats')} />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <Sparkles color="#14B8A6" size={16} />
-          <Text style={{ color: '#F1F5F9', fontSize: 17, fontWeight: '700' }}>Ask LiftFuel</Text>
+          <Text style={{ color: '#F1F5F9', fontSize: 17, fontWeight: '700' }}>Ask LiftTrack</Text>
         </View>
         <IconButton icon={<RotateCcw color="#F1F5F9" size={18} />} accessibilityLabel="Reset" variant="ghost" onPress={() => setMsgs([])} />
       </View>

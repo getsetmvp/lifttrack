@@ -65,7 +65,7 @@ export default function OnboardBody() {
       </View>
       <View style={{ padding: 24, paddingBottom: 32 }}>
         <Dots active={2} total={3} />
-        <Button label="Start using LiftFuel" variant="primary-teal" fullWidth onPress={submit} loading={update.isPending || addBm.isPending} />
+        <Button label="Start using LiftTrack" variant="primary-teal" fullWidth onPress={submit} loading={update.isPending || addBm.isPending} />
       </View>
     </SafeAreaView>
   );

@@ -40,7 +40,7 @@ apps/mobile/
 │   └── certificate.pem           PUBLIC cert; safe to commit
 ├── app.config.js                 dynamic Expo config
 ├── eas.json                      3 EAS profiles
-└── tailwind.config.ts            LiftFuel palette tokens per design.md
+└── tailwind.config.ts            LiftTrack palette tokens per design.md
 
 packages/shared-types/
 └── src/index.ts                  DTOs (mobile ↔ server contract)
