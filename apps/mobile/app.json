@@ -1,3 +1,14 @@
 {
-  "expo": {}
+  "expo": {
+    "extra": {
+      "env": "production",
+      "apiUrl": "https://server.getsetmvp.com",
+      "tenant": "liftfuel",
+      "sentryDsn": "",
+      "router": {},
+      "eas": {
+        "projectId": "d08a0145-fa12-48df-a8a0-7b520b89155f"
+      }
+    }
+  }
 }

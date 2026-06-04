@@ -11,6 +11,8 @@
   },
   "scripts": {
     "dev:mobile": "pnpm --filter @liftfuel/mobile dev",
+    "dev:web": "pnpm --filter @lifttrack/web dev",
+    "build:web": "pnpm --filter @lifttrack/web build",
     "android": "pnpm --filter @liftfuel/mobile android",
     "lint": "pnpm -r run lint",
     "typecheck": "pnpm -r run typecheck",
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "prettier": "^3.3.3",
+    "turbo": "^2.9.16",
     "typescript": "~5.6.0"
   }
 }
