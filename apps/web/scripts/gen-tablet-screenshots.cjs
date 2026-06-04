@@ -1,47 +1,39 @@
 #!/usr/bin/env node
 /**
- * Generate Play Store tablet screenshots from existing phone screenshots.
+ * Generate Play Store tablet screenshots for LiftTrack from phone screens.
  *
  * Output:
- *   ~/Productivity/hustle/lifttrack/play-assets/tablet-7in/0X-*.png
- *   ~/Productivity/hustle/lifttrack/play-assets/tablet-10in/0X-*.png
- *
- * Layout per shot:
- *   - Indigo gradient bg
- *   - Phone screenshot centred-left, drop-shadowed
- *   - LiftTrack wordmark + tagline + bullet stack right
- *   - Subtle grid overlay
- *
- * Both 7" and 10" use the same 5:8 portrait aspect (1200x1920 and 1600x2560).
+ *   ~/Productivity/hustle/liftfuel/play-assets/tablet-7in/0X-*.png   1200x1920
+ *   ~/Productivity/hustle/liftfuel/play-assets/tablet-10in/0X-*.png  1600x2560
  */
 const { Resvg } = require('@resvg/resvg-js');
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 
-const PLAY_ASSETS = path.join(os.homedir(), 'Productivity/hustle/lifttrack/play-assets');
-const SCREENSHOTS = path.join(os.homedir(), 'Productivity/hustle/lifttrack/screenshots/final');
+const PLAY_ASSETS = path.join(os.homedir(), 'Productivity/hustle/liftfuel/play-assets');
+const SCREEN_SRC = path.join(os.homedir(), 'Projects/liftfuel/apps/web/public/screenshots');
 
 const SHOTS = [
   {
-    file: '04-home-light.png',
-    title: 'Today at a glance',
-    sub: 'Spend, budgets, top categories — all surfaced on the home tab.',
+    file: 'today.png',
+    title: 'Today, in one tap',
+    sub: 'Routine, streak, macro rings, active workout — all on the home tab.',
   },
   {
-    file: 'capture-voice.png',
-    title: 'Tap. Speak. Saved.',
-    sub: '"Lunch 320 swiggy" → AI parses amount, merchant, category in one second.',
+    file: 'workout.png',
+    title: 'Log every rep',
+    sub: 'Decimal weights, drop sets, kg / lb. Rest timer auto-fires after every working set.',
   },
   {
-    file: '06-ask-light.png',
-    title: 'Ask your data',
-    sub: 'Natural-language questions over every expense you\'ve ever logged.',
+    file: 'meal-camera.png',
+    title: 'Snap the meal',
+    sub: 'AI returns calories + protein + carbs + fat. No food-database lookups.',
   },
   {
-    file: '07-insights-light.png',
-    title: 'Insights without spreadsheets',
-    sub: 'Charts, trends, recurring-expense radar, budget progress.',
+    file: 'stats.png',
+    title: 'Insights that read themselves',
+    sub: 'Volume trends, PR detection, plateau radar, recovery patterns.',
   },
 ];
 
@@ -55,8 +47,7 @@ function render(svg, outFile, width) {
   return png.length;
 }
 
-function template({ phoneBase64, title, sub, w, h }) {
-  // canvas viewBox 1200x1920 — scaled per output width
+function template({ phoneBase64, title, sub }) {
   const phoneW = 540;
   const phoneH = Math.round((phoneW * 1800) / 810);
   const phoneX = 80;
@@ -65,8 +56,8 @@ function template({ phoneBase64, title, sub, w, h }) {
   const textY = 480;
 
   const bullets = [
-    'Voice + photo + manual capture',
-    'AI parses amount, merchant, category',
+    'Workouts + AI meal macros in one app',
+    'Decimal weights, drop sets, PR detection',
     'Private — no ads, no analytics SDKs',
     'Free forever',
   ];
@@ -75,16 +66,16 @@ function template({ phoneBase64, title, sub, w, h }) {
 <svg width="1200" height="1920" viewBox="0 0 1200 1920" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="1920" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#312E81"/>
-      <stop offset="45%" stop-color="#4F46E5"/>
-      <stop offset="100%" stop-color="#6366F1"/>
+      <stop offset="0%" stop-color="#0F1115"/>
+      <stop offset="45%" stop-color="#0D9488"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
     </linearGradient>
     <radialGradient id="glow" cx="0.7" cy="0.2" r="0.8">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15"/>
-      <stop offset="60%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#F97316" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#F97316" stop-opacity="0"/>
     </radialGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000000" flood-opacity="0.45"/>
+      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000000" flood-opacity="0.55"/>
     </filter>
     <clipPath id="phoneClip">
       <rect x="${phoneX}" y="${phoneY}" width="${phoneW}" height="${phoneH}" rx="36"/>
@@ -105,7 +96,7 @@ function template({ phoneBase64, title, sub, w, h }) {
 
   <g transform="translate(80, 80)" fill="#FFFFFF" font-family="Helvetica, Arial, sans-serif">
     <text x="0" y="0" font-weight="700" font-size="56" letter-spacing="-1.5">LiftTrack</text>
-    <text x="0" y="40" fill-opacity="0.7" font-weight="500" font-size="22" letter-spacing="-0.2">Speak it. We log it.</text>
+    <text x="0" y="40" fill-opacity="0.7" font-weight="500" font-size="22" letter-spacing="-0.2">Train smart. Eat smarter.</text>
   </g>
 
   <g filter="url(#shadow)">
@@ -122,7 +113,7 @@ function template({ phoneBase64, title, sub, w, h }) {
       .map(
         (b, i) =>
           `<g transform="translate(0, ${260 + i * 56})">
-            <circle cx="14" cy="14" r="6" fill="#FFFFFF" fill-opacity="0.85"/>
+            <circle cx="14" cy="14" r="6" fill="#F97316"/>
             <text x="36" y="20" font-weight="500" font-size="22" fill-opacity="0.9">${escapeXml(b)}</text>
           </g>`,
       )
@@ -151,23 +142,21 @@ async function main() {
   }
 
   for (const [i, shot] of SHOTS.entries()) {
-    const src = path.join(SCREENSHOTS, shot.file);
+    const src = path.join(SCREEN_SRC, shot.file);
     if (!fs.existsSync(src)) {
       console.error(`MISSING: ${src}`);
       continue;
     }
     const phoneBase64 = fs.readFileSync(src).toString('base64');
-    const svg = template({ ...shot, phoneBase64, w: 1200, h: 1920 });
+    const svg = template({ ...shot, phoneBase64 });
 
     const idx = String(i + 1).padStart(2, '0');
-    const slug = shot.file.replace(/\.png$/, '').replace(/[^a-z0-9-]/gi, '-');
+    const slug = shot.file.replace(/\.png$/, '');
 
-    // 7-inch tablet: 1200x1920
     const out7 = path.join(PLAY_ASSETS, 'tablet-7in', `${idx}-${slug}-tablet7.png`);
     const size7 = render(svg, out7, 1200);
     console.log(`  wrote ${path.relative(PLAY_ASSETS, out7)} (${(size7 / 1024).toFixed(0)} KB)`);
 
-    // 10-inch tablet: 1600x2560
     const out10 = path.join(PLAY_ASSETS, 'tablet-10in', `${idx}-${slug}-tablet10.png`);
     const size10 = render(svg, out10, 1600);
     console.log(`  wrote ${path.relative(PLAY_ASSETS, out10)} (${(size10 / 1024).toFixed(0)} KB)`);
