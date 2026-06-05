@@ -1,21 +1,29 @@
 /**
- * Strips android.permission.SYSTEM_ALERT_WINDOW from the merged AndroidManifest.
+ * Strips Play-policy-sensitive permissions auto-injected into the merged
+ * AndroidManifest by transitive Expo / RN modules even though LiftTrack
+ * never uses the underlying capability at runtime.
  *
- * RN's autolinked debug AndroidManifest declares SYSTEM_ALERT_WINDOW for
- * dev-time red-box overlay support. The Expo prebuild manifest merger picks
- * it up and writes it into apps/mobile/android/app/src/main/AndroidManifest.xml
- * for all variants — including release. Play Console policy review flags
- * SYSTEM_ALERT_WINDOW because the app never requests overlay rendering at
- * runtime, so we mark the permission for removal via the manifest merger's
- * `tools:node="remove"` directive.
+ * Removed:
+ * - SYSTEM_ALERT_WINDOW: RN debug manifest declares it for dev-time red-box
+ *   overlay; the merger leaks it into release builds. Play policy flag.
+ * - RECORD_AUDIO: auto-added by expo-camera 17.x (video-with-audio capable
+ *   even though LiftTrack only uses still-photo capture for meal scans).
+ *   Play marks RECORD_AUDIO as a sensitive permission that requires runtime
+ *   justification, and LiftTrack has none.
  *
- * Copied verbatim from Voxpense after that project hit the same Play policy
- * blocker on 2026-06-04. Ships in the Day-1 hardening commit for LiftTrack
- * so the issue never surfaces in the first place.
+ * Each permission gets `tools:node="remove"` so the manifest merger drops it.
+ *
+ * Verify after `eas build --local`:
+ *   unzip -p build-*.aab base/manifest/AndroidManifest.xml | strings | grep ALERT
+ *   unzip -p build-*.aab base/manifest/AndroidManifest.xml | strings | grep RECORD_AUDIO
+ * Both should return empty after this plugin runs.
  */
 const { withAndroidManifest } = require('@expo/config-plugins');
 
-const TARGET = 'android.permission.SYSTEM_ALERT_WINDOW';
+const TARGETS = [
+  'android.permission.SYSTEM_ALERT_WINDOW',
+  'android.permission.RECORD_AUDIO',
+];
 
 module.exports = function withRemoveSystemAlertWindow(config) {
   return withAndroidManifest(config, (cfg) => {
@@ -28,15 +36,17 @@ module.exports = function withRemoveSystemAlertWindow(config) {
 
     const existing = manifest['uses-permission'] || [];
     const filtered = existing.filter(
-      (p) => p?.$?.['android:name'] !== TARGET,
+      (p) => !TARGETS.includes(p?.$?.['android:name']),
     );
 
-    filtered.push({
-      $: {
-        'android:name': TARGET,
-        'tools:node': 'remove',
-      },
-    });
+    for (const name of TARGETS) {
+      filtered.push({
+        $: {
+          'android:name': name,
+          'tools:node': 'remove',
+        },
+      });
+    }
 
     manifest['uses-permission'] = filtered;
     return cfg;
